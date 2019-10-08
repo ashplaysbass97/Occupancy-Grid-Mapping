@@ -9,6 +9,10 @@ import lejos.hardware.motor.NXTRegulatedMotor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.chassis.Wheel;
+import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.navigation.MovePilot;
 
 public class SmartRobot {
     private Brick ev3;
@@ -18,9 +22,14 @@ public class SmartRobot {
     private SampleProvider leftBumperSampleProvider, rightBumperSampleProvider, ultrasonicSampleProvider;
     private float[] leftBumperSample, rightBumperSample, ultrasonicSample;
     private NXTRegulatedMotor ultrasonicSensorMotor;
+    private MovePilot pilot;
 
     public static void main(String[] args) {
         SmartRobot myRobot = new SmartRobot();
+        
+        // test the pilot
+        myRobot.pilot.travel(5);
+        myRobot.pilot.rotate(45);
         
         // display whether the bumpers have been pressed and the distance from the ultrasonic sensor
         while (!Button.ESCAPE.isDown()) {
@@ -46,6 +55,7 @@ public class SmartRobot {
         lcd = LocalEV3.get().getGraphicsLCD();
         setupTouchSensor();
         setupUltrasonicSensor();
+        setupPilot();
     }
 
     // set up the bumpers
@@ -64,6 +74,15 @@ public class SmartRobot {
         ultrasonicSensor = new EV3UltrasonicSensor(ev3.getPort("S3"));
         ultrasonicSampleProvider = ultrasonicSensor.getDistanceMode();
         ultrasonicSample = new float[ultrasonicSampleProvider.sampleSize()];
+    }
+    
+    // set up the pilot
+    private void setupPilot() {
+        Wheel leftWheel = WheeledChassis.modelWheel(Motor.B, 4.05).offset(-4.9);
+        Wheel rightWheel = WheeledChassis.modelWheel(Motor.D, 4.05).offset(4.9);
+        Chassis myChassis = new WheeledChassis(new Wheel[] { leftWheel, rightWheel }, WheeledChassis.TYPE_DIFFERENTIAL);
+        pilot = new MovePilot(myChassis);
+        pilot.setLinearSpeed(10);
     }
 
     // whether the left bumper is pressed
