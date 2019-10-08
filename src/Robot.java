@@ -2,7 +2,6 @@ import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
 import lejos.hardware.motor.Motor;
-import lejos.hardware.motor.NXTRegulatedMotor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
@@ -17,7 +16,6 @@ public class Robot {
 	private EV3UltrasonicSensor ultrasonicSensor;
     private SampleProvider leftBumperSampleProvider, rightBumperSampleProvider, ultrasonicSampleProvider;
     private float[] leftBumperSample, rightBumperSample, ultrasonicSample;
-    private NXTRegulatedMotor ultrasonicSensorMotor;
     private MovePilot pilot;
 
     public static void main(String[] args) {
@@ -57,7 +55,6 @@ public class Robot {
     
 	// set up the ultrasonic sensor
     private void setupUltrasonicSensor() {
-        ultrasonicSensorMotor = Motor.C;
         ultrasonicSensor = new EV3UltrasonicSensor(ev3.getPort("S3"));
         ultrasonicSampleProvider = ultrasonicSensor.getDistanceMode();
         ultrasonicSample = new float[ultrasonicSampleProvider.sampleSize()];

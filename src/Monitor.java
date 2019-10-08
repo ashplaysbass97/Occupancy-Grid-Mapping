@@ -19,9 +19,9 @@ public class Monitor extends Thread {
         	
         	// display whether the bumpers have been pressed and the distance from the ultrasonic sensor
             lcd.setFont(Font.getSmallFont());
-        	lcd.drawString("LBump: " + myRobot.isLeftBumperPressed(), 0, 20, 0);
-        	lcd.drawString("RBump: " + myRobot.isRightBumperPressed(), 0, 30, 0);
-        	lcd.drawString("Dist: " + myRobot.getDistance(), 0, 40, 0); 
+        	lcd.drawString("Left Bumper: " + myRobot.isLeftBumperPressed(), 0, 20, 0);
+        	lcd.drawString("Right Bumper: " + myRobot.isRightBumperPressed(), 0, 30, 0);
+        	lcd.drawString("Distance: " + myRobot.getDistance(), 0, 40, 0); 
         	
     		try {
 				sleep(400);
