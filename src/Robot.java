@@ -1,9 +1,6 @@
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
-import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.lcd.Font;
-import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.motor.NXTRegulatedMotor;
 import lejos.hardware.sensor.EV3TouchSensor;
@@ -14,9 +11,8 @@ import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
 
-public class SmartRobot {
+public class Robot {
     private Brick ev3;
-    private GraphicsLCD lcd;
     private EV3TouchSensor leftBumper, rightBumper;
 	private EV3UltrasonicSensor ultrasonicSensor;
     private SampleProvider leftBumperSampleProvider, rightBumperSampleProvider, ultrasonicSampleProvider;
@@ -25,34 +21,25 @@ public class SmartRobot {
     private MovePilot pilot;
 
     public static void main(String[] args) {
-        SmartRobot myRobot = new SmartRobot();
+        Robot myRobot = new Robot();
+        Monitor myMonitor = new Monitor(myRobot);	
+        
+        // start the monitor
+     	myMonitor.start();
         
         // test the pilot
         myRobot.pilot.travel(5);
         myRobot.pilot.rotate(45);
         
-        // display whether the bumpers have been pressed and the distance from the ultrasonic sensor
-        while (!Button.ESCAPE.isDown()) {
-        	myRobot.lcd.clear();
-            myRobot.lcd.setFont(Font.getSmallFont());
-        	myRobot.lcd.drawString("LBump: " + myRobot.isLeftBumperPressed(), 0, 20, 0);
-        	myRobot.lcd.drawString("RBump: " + myRobot.isRightBumperPressed(), 0, 30, 0);
-        	myRobot.lcd.drawString("Dist: " + myRobot.getDistance(), 0, 40, 0); 
-    		try {
-				Thread.sleep(400);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        
+        // stop the monitor thread and close the robot
+        Button.ESCAPE.waitForPress();
+        myMonitor.terminate();
         myRobot.closeRobot();
     }
 
     // SmartRobot constructor
-    public SmartRobot() {
+    public Robot() {
         ev3 = BrickFinder.getDefault();
-        lcd = LocalEV3.get().getGraphicsLCD();
         setupTouchSensor();
         setupUltrasonicSensor();
         setupPilot();
@@ -103,9 +90,10 @@ public class SmartRobot {
     	return ultrasonicSample[0];
 	}
 
-    // close the bumpers
+    // close the bumpers and ultrasonic sensor
     private void closeRobot() {
         leftBumper.close();
         rightBumper.close();
+        ultrasonicSensor.close();
     }
 }
