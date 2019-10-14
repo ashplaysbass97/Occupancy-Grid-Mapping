@@ -39,7 +39,7 @@ public class Robot {
     public Robot() {
         ev3 = BrickFinder.getDefault();
         setupTouchSensor();
-        setupUltrasonicSensor();
+//        setupUltrasonicSensor();
         setupPilot();
     }
 
@@ -86,6 +86,17 @@ public class Robot {
     	ultrasonicSampleProvider.fetchSample(ultrasonicSample, 0);
     	return ultrasonicSample[0];
 	}
+    
+    // get the pilot object from the robot
+    public MovePilot getPilot() {
+      return this.pilot;
+    }
+    
+    //get the robots current angle
+//    public float getAngle() {
+//        gyroSP.fetchSample(angleSample, 0);
+//        return angleSample[0];
+//    }
 
     // close the bumpers and ultrasonic sensor
     private void closeRobot() {
