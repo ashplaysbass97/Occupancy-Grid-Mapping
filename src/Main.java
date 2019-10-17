@@ -6,9 +6,12 @@ import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
 public class Main {
-	
 	private static ArrayList<Cell> grid = new ArrayList<Cell>();
 	private static Cell currentCell;
+	
+	private static final int GRID_WIDTH = 7;
+	private static final int GRID_HEIGHT = 6;
+	private static final int CELL_SIZE = 25;
 	
     public static void main(String[] args) {
         Robot myRobot = new Robot();
@@ -42,16 +45,16 @@ public class Main {
     }
     
     private static void createGrid() {
-		for (int y = 0; y < 9; y++) {
-			for (int x = 0; x < 9; x++) {
+		for (int y = 0; y < GRID_HEIGHT; y++) {
+			for (int x = 0; x < GRID_WIDTH; x++) {
 				grid.add(new Cell(x, y));
 			}
 		}
 	}
 	
 	private static void setNeighbours() {
-		for (int y = 0; y < 9; y++) {
-			for (int x = 0; x < 9; x++) {
+		for (int y = 0; y < GRID_HEIGHT; y++) {
+			for (int x = 0; x < GRID_WIDTH; x++) {
 				ArrayList<Cell> neighbours = new ArrayList<Cell>();
 				if (x != 0) neighbours.add(findUsingCoordinate(x - 1, y));
 				if (x != 8) neighbours.add(findUsingCoordinate(x + 1, y));

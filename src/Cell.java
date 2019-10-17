@@ -12,7 +12,7 @@ public class Cell {
 		this.y = y;
 	}
 	
-	public int countUnknownNeighbours() {
+	public final int countUnknownNeighbours() {
 		int count = 0;
 		for (Cell neighbour : neighbours) {
 			if (neighbour.status == "unknown") count++;

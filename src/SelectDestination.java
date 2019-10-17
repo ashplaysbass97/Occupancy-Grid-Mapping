@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 
 import lejos.robotics.subsumption.Behavior;
 
@@ -14,29 +12,35 @@ public class SelectDestination implements Behavior  {
 		this.currentCell = currentCell;
 	}
 	
-	public void suppress() {
+	public final void suppress() {
 		suppressed = true;
 	}
 	
-	public boolean takeControl() {
+	public final boolean takeControl() {
 		return true;
 	}
 
-	public void action() {
+	public final void action() {
 		suppressed = false;
 		setDistances();
 		Cell destination = selectDestination();
 		System.out.println("Next destination: (" + destination.getX() + ", " + destination.getY() + ").");
 	}
 	
+	/**
+	 * Updates the distance to the current cell for all cells in the grid.
+	 */
 	private void setDistances() {
 		for (Cell cell : grid) {
 			cell.setDistance(currentCell.getX(), currentCell.getY());
 		}
 	}
 	
+	/**
+	 * Sorts cells based on the distance from the current position and the number of unknown neighbours.
+	 * @return the selected destination to travel to.
+	 */
 	private Cell selectDestination() {
-		// sort cells on distance from current cell
 		Collections.sort(grid, new Comparator<Cell>() {
 			  @Override
 			  public int compare(Cell a, Cell b) {
@@ -44,7 +48,6 @@ public class SelectDestination implements Behavior  {
 			  }
 		});
 		
-		// sort cells on number of unknown neighbours
 		Collections.sort(grid, new Comparator<Cell>() {
 			  @Override
 			  public int compare(Cell a, Cell b) {
