@@ -5,14 +5,12 @@ import lejos.hardware.lcd.GraphicsLCD;
 public class Monitor extends Thread {
 	private volatile boolean running = true;
 	private GraphicsLCD lcd;
-	private Robot myRobot;
 	private String[][] gridStates;
 	private final int gridWidth = 7;
 	private final int gridHeight= 6;
 	
-	public Monitor(Robot myRobot) {
+	public Monitor() {
 		this.setDaemon(true);
-		this.myRobot = myRobot;
 		lcd = LocalEV3.get().getGraphicsLCD();
 		this.gridStates = new String[6][7];
 		initialiseGridStates();

@@ -1,6 +1,5 @@
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
-import lejos.hardware.Button;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -18,28 +17,11 @@ public class Robot {
     private float[] leftBumperSample, rightBumperSample, ultrasonicSample;
     private MovePilot pilot;
 
-    public static void main(String[] args) {
-        Robot myRobot = new Robot();
-        Monitor myMonitor = new Monitor(myRobot);	
-        
-        // start the monitor
-     	myMonitor.start();
-        
-        // test the pilot
-        myRobot.pilot.travel(5);
-        myRobot.pilot.rotate(45);
-        
-        // stop the monitor thread and close the robot
-        Button.ESCAPE.waitForPress();
-        myMonitor.terminate();
-        myRobot.closeRobot();
-    }
-
     // SmartRobot constructor
     public Robot() {
         ev3 = BrickFinder.getDefault();
         setupTouchSensor();
-//        setupUltrasonicSensor();
+        setupUltrasonicSensor();
         setupPilot();
     }
 
@@ -70,25 +52,25 @@ public class Robot {
     }
 
     // whether the left bumper is pressed
-    public boolean isLeftBumperPressed() {
+    public final boolean isLeftBumperPressed() {
         leftBumperSampleProvider.fetchSample(leftBumperSample, 0);
         return (leftBumperSample[0] == 1.0);
     }
 
     // whether the right bumper is pressed
-    public boolean isRightBumperPressed() {
+    public final boolean isRightBumperPressed() {
         rightBumperSampleProvider.fetchSample(rightBumperSample, 0);
         return (rightBumperSample[0] == 1.0);
     }
     
     // get the distance from the ultrasonic sensor
-    public float getDistance() {
+    public final float getDistance() {
     	ultrasonicSampleProvider.fetchSample(ultrasonicSample, 0);
     	return ultrasonicSample[0];
 	}
     
     // get the pilot object from the robot
-    public MovePilot getPilot() {
+    public final MovePilot getPilot() {
       return this.pilot;
     }
     
@@ -99,7 +81,7 @@ public class Robot {
 //    }
 
     // close the bumpers and ultrasonic sensor
-    private void closeRobot() {
+    public final void closeRobot() {
         leftBumper.close();
         rightBumper.close();
         ultrasonicSensor.close();
