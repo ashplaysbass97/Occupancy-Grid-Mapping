@@ -32,7 +32,7 @@ public class Sensor {
 	public void sensorRotateLeft() {
 		sensorMotor.rotateTo(-90);
 	}
-	public void SensorRortateCentre() {
+	public void SensorRotateCentre() {
 		sensorMotor.rotateTo(0);
 	}
 	
