@@ -15,7 +15,7 @@ public class Cell {
 	public final int countUnknownNeighbours() {
 		int count = 0;
 		for (Cell neighbour : neighbours) {
-			if (neighbour.status == "unknown") count++;
+			if (neighbour.getStatus() == "unknown") count++;
 		}
 		return count;
 	}

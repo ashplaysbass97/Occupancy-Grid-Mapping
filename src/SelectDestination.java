@@ -3,7 +3,7 @@ import java.util.*;
 import lejos.robotics.subsumption.Behavior;
 
 public class SelectDestination implements Behavior  {
-	private boolean suppressed;
+	private boolean suppressed = false;
 	private ArrayList<Cell> grid;
 	private Cell currentCell;
 	
@@ -24,7 +24,10 @@ public class SelectDestination implements Behavior  {
 		suppressed = false;
 		setDistances();
 		Cell destination = selectDestination();
-		System.out.println("Next destination: (" + destination.getX() + ", " + destination.getY() + ").");
+		while (!suppressed) {
+			Thread.yield();
+		}
+//		System.out.println("Next destination: (" + destination.getX() + ", " + destination.getY() + ").");
 	}
 	
 	/**

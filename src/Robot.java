@@ -1,20 +1,28 @@
+import lejos.hardware.Battery;
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.motor.Motor;
+import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.chassis.Chassis;
+
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
 
+/**
+ * Robot controller class
+ * Initialises sensors and the pilot.
+ */
 public class Robot {
     private Brick ev3;
     private EV3TouchSensor leftBumper, rightBumper;
 	private EV3UltrasonicSensor ultrasonicSensor;
-    private SampleProvider leftBumperSampleProvider, rightBumperSampleProvider, ultrasonicSampleProvider;
-    private float[] leftBumperSample, rightBumperSample, ultrasonicSample;
+	private EV3GyroSensor gyroSensor;
+    private SampleProvider leftBumperSampleProvider, rightBumperSampleProvider, ultrasonicSampleProvider, gyroSampleProvider;
+    private float[] leftBumperSample, rightBumperSample, ultrasonicSample, gyroSample;
     private MovePilot pilot;
 
     // SmartRobot constructor
@@ -23,6 +31,7 @@ public class Robot {
         setupTouchSensor();
         setupUltrasonicSensor();
         setupPilot();
+        setupGyroSensor();
     }
 
     // set up the bumpers
@@ -35,9 +44,18 @@ public class Robot {
         rightBumperSample = new float[rightBumperSampleProvider.sampleSize()];
     }
     
+    /**
+     * Setup Gyro sensor.
+     */
+    private void setupGyroSensor() {
+    	gyroSensor = new EV3GyroSensor(ev3.getPort("S3"));
+    	gyroSampleProvider = gyroSensor.getAngleMode();
+    	gyroSample = new float[gyroSampleProvider.sampleSize()];
+    }
+    
 	// set up the ultrasonic sensor
     private void setupUltrasonicSensor() {
-        ultrasonicSensor = new EV3UltrasonicSensor(ev3.getPort("S3"));
+        ultrasonicSensor = new EV3UltrasonicSensor(ev3.getPort("S2"));
         ultrasonicSampleProvider = ultrasonicSensor.getDistanceMode();
         ultrasonicSample = new float[ultrasonicSampleProvider.sampleSize()];
     }
@@ -74,11 +92,16 @@ public class Robot {
       return this.pilot;
     }
     
-    //get the robots current angle
-//    public float getAngle() {
-//        gyroSP.fetchSample(angleSample, 0);
-//        return angleSample[0];
-//    }
+//    get the robots current angle
+    public float getAngle() {
+    	gyroSampleProvider.fetchSample(gyroSample, 0);
+        return gyroSample[0];
+    }
+    
+    // get the robots current battery voltage
+    public float getBatteryVoltage() {
+    	return Battery.getVoltage();
+    }
 
     // close the bumpers and ultrasonic sensor
     public final void closeRobot() {
