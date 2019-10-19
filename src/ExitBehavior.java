@@ -8,10 +8,10 @@ public class ExitBehavior implements Behavior{
 	
 	private boolean suppressed = false;
 	private ServerSocket server;
-	Robot myRobot;
-	Monitor myMonitor;
+	PilotRobot myRobot;
+	PilotMonitor myMonitor;
 	
-	public ExitBehavior(Robot robot, Monitor monitor, ServerSocket socket){
+	public ExitBehavior(PilotRobot robot, PilotMonitor monitor, ServerSocket socket){
 		this.myRobot = robot;
 		this.myMonitor = monitor;
 		this.server = socket;

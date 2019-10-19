@@ -6,22 +6,22 @@ import java.util.ArrayList;
 // Used to send data about the robot to a PC client interface.
 //TODO add grid interface for probabilitys and robots position.
 public class PCMonitor extends Thread {
-	
+
 	//Server socket between robot and client
 	private Socket client;
-	
+
 	//checks if thread is running.
 	private volatile boolean running = true;
-	
+
 	//Data output stream
 	private PrintWriter out;
-	
+
 	//The actual robot.
-	private Robot robot;
-	
+	private PilotRobot robot;
+
 	private  String[] grid;
-	
-	public PCMonitor(Socket client, Robot robot, String[] grid) {
+
+	public PCMonitor(Socket client, PilotRobot robot, String[] grid) {
 		this.client = client;
 		this.robot = robot;
 		this.grid = grid;
@@ -32,16 +32,16 @@ public class PCMonitor extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	//run the thread
 	public void run() {
         while (running) {
         	//this is the only way i could stop the lcd screen overlaping text might revisit
         	for (int i = 0; i < 9; i++) {
-                System.out.println("");  
-                System.out.flush();  
+                System.out.println("");
+                System.out.flush();
         	}
-        	
+
         	/*output data for
         	 * Battery,
         	 * Left touch sensor,
@@ -76,5 +76,5 @@ public class PCMonitor extends Thread {
 			}
     	}
     }
-	
+
 }
