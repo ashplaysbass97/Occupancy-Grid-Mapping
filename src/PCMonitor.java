@@ -16,9 +16,9 @@ public class PCMonitor extends Thread {
 	private PrintWriter out;
 	
 	//The actual robot.
-	private Robot robot;
+	private PilotRobot robot;
 	
-	public PCMonitor(Socket client, Robot robot) {
+	public PCMonitor(Socket client, PilotRobot robot) {
 		this.client = client;
 		this.robot = robot;
 		try {

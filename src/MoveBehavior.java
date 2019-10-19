@@ -2,14 +2,14 @@ import java.util.*;
 
 import lejos.robotics.subsumption.Behavior;
 
-public class MoveBehaviour implements Behavior  {
+public class MoveBehavior implements Behavior  {
 	private boolean suppressed = false;
 	private ArrayList<Cell> grid;
 	private Cell currentCell;
 	private PathFinder pathFinder;
 	private ArrayList<Cell> path;
 	
-	public MoveBehaviour(ArrayList<Cell> grid, Cell startCell){
+	public MoveBehavior(ArrayList<Cell> grid, Cell startCell){
 		this.grid = grid;
 		currentCell = startCell;
 		pathFinder = new PathFinder(grid);

@@ -16,7 +16,7 @@ import lejos.robotics.navigation.MovePilot;
  * Robot controller class
  * Initialises sensors and the pilot.
  */
-public class Robot {
+public class PilotRobot {
     private Brick ev3;
     private EV3TouchSensor leftBumper, rightBumper;
 	private EV3UltrasonicSensor ultrasonicSensor;
@@ -26,7 +26,7 @@ public class Robot {
     private MovePilot pilot;
 
     // SmartRobot constructor
-    public Robot() {
+    public PilotRobot() {
         ev3 = BrickFinder.getDefault();
         setupTouchSensor();
         setupUltrasonicSensor();

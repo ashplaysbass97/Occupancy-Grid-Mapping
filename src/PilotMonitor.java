@@ -2,14 +2,14 @@ import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.GraphicsLCD;
 
-public class Monitor extends Thread {
+public class PilotMonitor extends Thread {
 	private volatile boolean running = true;
 	private GraphicsLCD lcd;
 	private String[][] gridStates;
 	private final int gridWidth = 7;
 	private final int gridHeight= 6;
 	
-	public Monitor() {
+	public PilotMonitor() {
 		this.setDaemon(true);
 		lcd = LocalEV3.get().getGraphicsLCD();
 		this.gridStates = new String[6][7];
