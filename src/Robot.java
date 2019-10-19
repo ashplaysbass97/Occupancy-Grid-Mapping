@@ -24,14 +24,17 @@ public class Robot {
     private SampleProvider leftBumperSampleProvider, rightBumperSampleProvider, ultrasonicSampleProvider, gyroSampleProvider;
     private float[] leftBumperSample, rightBumperSample, ultrasonicSample, gyroSample;
     private MovePilot pilot;
+    private int[] gridPosition = new int[2]; //position 0 is x position y is 1
 
     // SmartRobot constructor
     public Robot() {
+        gridPosition[0] = 0;
+        gridPosition[1] = 0;
         ev3 = BrickFinder.getDefault();
-        setupTouchSensor();
-        setupUltrasonicSensor();
+//        setupTouchSensor();
+//        setupUltrasonicSensor();
         setupPilot();
-        setupGyroSensor();
+//        setupGyroSensor();
     }
 
     // set up the bumpers
@@ -108,5 +111,18 @@ public class Robot {
         leftBumper.close();
         rightBumper.close();
         ultrasonicSensor.close();
+    }
+    
+    public void setGridPosition(int x, int y) {
+      this.gridPosition[0] = x;
+      this.gridPosition[1] = y;
+    }
+    
+    public int getX() {
+      return this.gridPosition[0];
+    }
+    
+    public int getY() {
+      return this.gridPosition[1];
     }
 }

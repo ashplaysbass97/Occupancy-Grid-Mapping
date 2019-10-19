@@ -19,11 +19,25 @@ public class Main {
 	//Server socket used between robot and pc client.
 	private static ServerSocket server;
 	
+	private static String[] occupancyGrid = new String[42];
+	
 	public static void main(String[] args) {
 		
+	  //Give starting values to occupancyGrid (Grid position 0 is 0.0 since this is where the robot is assumed to start.);
+	  occupancyGrid[0] = "0.0";
+	  for (int i = 1; i < 42; i++) {
+	    occupancyGrid[i] = "?";
+	  }
+  	// create grid and set neighbours
+        createGrid();
+        setNeighbours();
+        currentCell = findUsingCoordinate(0, 0);
+        findUsingCoordinate(0, 0).setStatus("clear");
+        
+    //initalise robot and pilot and monitor
 		Robot myRobot = new Robot();
 		MovePilot myPilot = myRobot.getPilot();
-		Monitor myMonitor = new Monitor();	
+		Monitor myMonitor = new Monitor(occupancyGrid);	
 		
 		//Start server and create PCMonitor thread;
 		PCMonitor pcMonitor = null;
@@ -31,7 +45,7 @@ public class Main {
 			server = new ServerSocket(port);
 			System.out.println("Awaiting client..");
 			Socket client = server.accept();
-			pcMonitor = new PCMonitor(client, myRobot);
+			pcMonitor = new PCMonitor(client, myRobot, occupancyGrid);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,11 +61,7 @@ public class Main {
 		myPilot.travel(5);
 		myPilot.rotate(45);
 		
-		// create grid and set neighbours
-		createGrid();
-		setNeighbours();
-		currentCell = findUsingCoordinate(0, 0);
-		findUsingCoordinate(0, 0).setStatus("clear");
+		
 		
 		// set up the behaviours for the arbitrator and construct it
 		Behavior b1 = new MoveBehaviour(grid, currentCell);

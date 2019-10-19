@@ -1,6 +1,7 @@
 import lejos.hardware.Battery;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 // Used to send data about the robot to a PC client interface.
 //TODO add grid interface for probabilitys and robots position.
@@ -18,9 +19,12 @@ public class PCMonitor extends Thread {
 	//The actual robot.
 	private Robot robot;
 	
-	public PCMonitor(Socket client, Robot robot) {
+	private  String[] grid;
+	
+	public PCMonitor(Socket client, Robot robot, String[] grid) {
 		this.client = client;
 		this.robot = robot;
+		this.grid = grid;
 		try {
 		    out = new PrintWriter(client.getOutputStream(), true);
 		} catch (IOException e) {
@@ -47,15 +51,22 @@ public class PCMonitor extends Thread {
         	 * and motor status
         	 */
         	out.println("Battery: " + robot.getBatteryVoltage());
-        	out.println("Left touch sensor: " + robot.isLeftBumperPressed());
-        	out.println("Right touch sensor: " + robot.isRightBumperPressed());
-        	out.println("Sonar distance: " + robot.getDistance());
-        	out.println("Gyro angle: " + robot.getAngle());
+        	out.println("Left touch sensor: " /*+ robot.isLeftBumperPressed()*/);
+        	out.println("Right touch sensor: " /*+ robot.isRightBumperPressed()*/);
+        	out.println("Sonar distance: " /*+ robot.getDistance()*/);
+        	out.println("Gyro angle: " /*+ robot.getAngle()*/);
         	if (robot.getPilot().isMoving()) {
         		out.println("Motor status: " + "Moving");
         	} else {
         		out.println("Motor status: " + "Stationary");
         	}
+        	out.println("  type: " + robot.getPilot().getMovement().getMoveType());
+        	String probabilityData = "";
+        	for (int i = 0; i < this.grid.length; i++) {
+        	  probabilityData += this.grid[i] + ",";
+        	}
+        	out.println(probabilityData);
+        	out.println(robot.getX() + "," + robot.getY());
 			out.flush();
     		try {
 				sleep(400);
