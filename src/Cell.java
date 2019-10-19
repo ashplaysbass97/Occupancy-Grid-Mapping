@@ -98,4 +98,5 @@ public class Cell {
 	public final void setNeighbours(ArrayList<Cell> neighbours) {
 		this.neighbours = neighbours;
 	}
+	
 }
