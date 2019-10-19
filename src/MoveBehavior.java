@@ -4,12 +4,14 @@ import lejos.robotics.subsumption.Behavior;
 
 public class MoveBehavior implements Behavior  {
 	private boolean suppressed = false;
+	private PilotRobot myRobot;
 	private ArrayList<Cell> grid;
 	private Cell currentCell;
 	private PathFinder pathFinder;
-	private ArrayList<Cell> path;
+	private ArrayList<Cell> path = new ArrayList<Cell>();
 	
-	public MoveBehavior(ArrayList<Cell> grid, Cell startCell){
+	public MoveBehavior(PilotRobot myRobot, ArrayList<Cell> grid, Cell startCell) {
+		this.myRobot = myRobot;
 		this.grid = grid;
 		currentCell = startCell;
 		pathFinder = new PathFinder(grid);
@@ -25,12 +27,16 @@ public class MoveBehavior implements Behavior  {
 
 	public final void action() {
 		suppressed = false;
-		Cell destination = selectDestination();
-		path = pathFinder.findPath(currentCell, destination);
 		
-		while (path.size() != 0 && !suppressed) {
+		if (path.isEmpty()) {
+			Cell destination = selectDestination();
+			path = pathFinder.findPath(currentCell, destination);
+		}
+		
+		if (!path.isEmpty() && !suppressed) {
 			Cell nextStep = path.remove(0);
 			// TODO move to next step
+			Thread.yield();
 		}
 	}
 	

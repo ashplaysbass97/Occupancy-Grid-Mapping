@@ -54,7 +54,7 @@ public class Main {
 		findUsingCoordinate(0, 0).setStatus("clear");
 		
 		// set up the behaviours for the arbitrator and construct it
-		Behavior b1 = new MoveBehavior(grid, currentCell);
+		Behavior b1 = new MoveBehavior(myRobot, grid, currentCell);
 		// TODO behaviour for scanning the surroundings
 		// TODO behaviour for obstacle avoidance
 		// TODO behaviour for returning to the starting point once the map is complete
