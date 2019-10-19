@@ -2,14 +2,17 @@ import java.util.*;
 
 import lejos.robotics.subsumption.Behavior;
 
-public class SelectDestination implements Behavior  {
+public class MoveBehaviour implements Behavior  {
 	private boolean suppressed = false;
 	private ArrayList<Cell> grid;
 	private Cell currentCell;
+	private PathFinder pathFinder;
+	private ArrayList<Cell> path;
 	
-	public SelectDestination(ArrayList<Cell> grid, Cell currentCell){
+	public MoveBehaviour(ArrayList<Cell> grid, Cell startCell){
 		this.grid = grid;
-		this.currentCell = currentCell;
+		currentCell = startCell;
+		pathFinder = new PathFinder(grid);
 	}
 	
 	public final void suppress() {
@@ -22,20 +25,12 @@ public class SelectDestination implements Behavior  {
 
 	public final void action() {
 		suppressed = false;
-		setDistances();
 		Cell destination = selectDestination();
-		while (!suppressed) {
-			Thread.yield();
-		}
-//		System.out.println("Next destination: (" + destination.getX() + ", " + destination.getY() + ").");
-	}
-	
-	/**
-	 * Updates the distance to the current cell for all cells in the grid.
-	 */
-	private void setDistances() {
-		for (Cell cell : grid) {
-			cell.setDistance(currentCell.getX(), currentCell.getY());
+		path = pathFinder.findPath(currentCell, destination);
+		
+		while (path.size() != 0 && !suppressed) {
+			Cell nextStep = path.remove(0);
+			// TODO move to next step
 		}
 	}
 	
@@ -44,6 +39,10 @@ public class SelectDestination implements Behavior  {
 	 * @return the selected destination to travel to.
 	 */
 	private Cell selectDestination() {
+		for (Cell cell : grid) {
+			cell.setDistance(currentCell.getX(), currentCell.getY());
+		}
+		
 		Collections.sort(grid, new Comparator<Cell>() {
 			  @Override
 			  public int compare(Cell a, Cell b) {

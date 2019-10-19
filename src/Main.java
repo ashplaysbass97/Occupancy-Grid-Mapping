@@ -15,19 +15,18 @@ public class Main {
 	
 	private static final int GRID_WIDTH = 7;
 	private static final int GRID_HEIGHT = 6;
-	private static final int CELL_SIZE = 25;
 	
 	//Server socket used between robot and pc client.
 	private static ServerSocket server;
 	
-    public static void main(String[] args) {
-    	
-        Robot myRobot = new Robot();
-        MovePilot myPilot = myRobot.getPilot();
-        Monitor myMonitor = new Monitor();	
-        
-    	//Start server and create PCMonitor thread;
-    	PCMonitor pcMonitor = null;
+	public static void main(String[] args) {
+		
+		Robot myRobot = new Robot();
+		MovePilot myPilot = myRobot.getPilot();
+		Monitor myMonitor = new Monitor();	
+		
+		//Start server and create PCMonitor thread;
+		PCMonitor pcMonitor = null;
 		try {
 			server = new ServerSocket(port);
 			System.out.println("Awaiting client..");
@@ -37,35 +36,34 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        //start pcMonitor
-        pcMonitor.start();
-        
-        // start the robot monitor
-     	myMonitor.start();
-        
-        // test the pilot
-     	myPilot.travel(5);
-     	myPilot.rotate(45);
-     	
-     	// create grid and set neighbours
-     	createGrid();
+		
+		//start pcMonitor
+		pcMonitor.start();
+		
+		// start the robot monitor
+		myMonitor.start();
+		
+		// test the pilot
+		myPilot.travel(5);
+		myPilot.rotate(45);
+		
+		// create grid and set neighbours
+		createGrid();
 		setNeighbours();
 		currentCell = findUsingCoordinate(0, 0);
-        
-     	// set up the behaviours for the arbitrator and construct it
-        Behavior b1 = new SelectDestination(grid, currentCell);
+		findUsingCoordinate(0, 0).setStatus("clear");
+		
+		// set up the behaviours for the arbitrator and construct it
+		Behavior b1 = new MoveBehaviour(grid, currentCell);
 		Behavior b2 = new ExitBehavior(myRobot, myMonitor, server);
-        Behavior [] behaviorArray = {b1,b2};
+		Behavior [] behaviorArray = {b1, b2};
 		Arbitrator arbitrator = new Arbitrator(behaviorArray);
 		
 		// start the arbitrator
 		arbitrator.go();
-        
-
-    }
-    
-    private static void createGrid() {
+	}
+	
+	private static void createGrid() {
 		for (int y = 0; y < GRID_HEIGHT; y++) {
 			for (int x = 0; x < GRID_WIDTH; x++) {
 				grid.add(new Cell(x, y));
@@ -73,10 +71,10 @@ public class Main {
 		}
 	}
 	
-    /**
-     * Jamie - fixed a bug where limits for setting neighbours when x = 8 or y = 8
-     * 	was producing a nullPointerException x limit is now 6 and y limit is 5.
-     */
+	/**
+	 * Jamie - fixed a bug where limits for setting neighbours when x = 8 or y = 8
+	 * 	was producing a nullPointerException x limit is now 6 and y limit is 5.
+	 */
 	private static void setNeighbours() {
 		for (int y = 0; y < GRID_HEIGHT; y++) {
 			for (int x = 0; x < GRID_WIDTH; x++) {
@@ -86,7 +84,7 @@ public class Main {
 				if (y != 5) neighbours.add(findUsingCoordinate(x, y + 1));
 				if (y != 0) neighbours.add(findUsingCoordinate(x, y - 1));
 				findUsingCoordinate(x, y).setNeighbours(neighbours);
-//				findUsingCoordinate(x, y).printNeighbours();
+				// findUsingCoordinate(x, y).printNeighbours();
 			}
 		}
 	}
