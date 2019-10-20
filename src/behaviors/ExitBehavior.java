@@ -1,8 +1,11 @@
+package behaviors;
 import java.io.IOException;
 import java.net.*;
 
 import lejos.hardware.Button;
 import lejos.robotics.subsumption.Behavior;
+import main.PilotRobot;
+import monitors.PilotMonitor;
 
 public class ExitBehavior implements Behavior{
 	

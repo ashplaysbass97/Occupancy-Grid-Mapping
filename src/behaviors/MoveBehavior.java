@@ -1,6 +1,10 @@
+package behaviors;
 import java.util.*;
 
 import lejos.robotics.subsumption.Behavior;
+import main.Cell;
+import main.PathFinder;
+import main.PilotRobot;
 
 public class MoveBehavior implements Behavior  {
 	private boolean suppressed = false;

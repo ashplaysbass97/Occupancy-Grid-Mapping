@@ -1,9 +1,16 @@
+package main;
 import java.util.ArrayList;
+
+import behaviors.ExitBehavior;
+import behaviors.MoveBehavior;
+
 import java.io.*;
 import java.net.*;
 import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
+import monitors.PCMonitor;
+import monitors.PilotMonitor;
 
 public class Main {
 	//server port between pc client and robot

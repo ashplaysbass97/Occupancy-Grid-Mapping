@@ -1,3 +1,4 @@
+package main;
 import lejos.hardware.Battery;
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;

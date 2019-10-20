@@ -1,4 +1,7 @@
+package monitors;
 import lejos.hardware.Battery;
+import main.PilotRobot;
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
