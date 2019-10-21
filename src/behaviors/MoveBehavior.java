@@ -7,6 +7,7 @@ import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.navigation.Pose;
 import lejos.robotics.subsumption.Behavior;
 import main.Cell;
+import main.Grid;
 import main.PathFinder;
 import main.PilotRobot;
 
@@ -14,8 +15,7 @@ public class MoveBehavior implements Behavior {
 	private boolean suppressed = false;
 	private MovePilot myPilot;
 	private OdometryPoseProvider opp;
-	private ArrayList<Cell> grid;
-	private Cell currentCell;
+	private Grid grid;
 	private PathFinder pathFinder;
 	private ArrayList<Cell> path = new ArrayList<Cell>();
 	
@@ -24,13 +24,12 @@ public class MoveBehavior implements Behavior {
 	private static final int HEADING_EAST = 90;
 	private static final int HEADING_SOUTH = 180;
 	
-	public MoveBehavior(PilotRobot myRobot, ArrayList<Cell> grid, Cell startCell) {
+	public MoveBehavior(PilotRobot myRobot, Grid grid) {
 		myPilot = myRobot.getPilot();
 		opp = myRobot.getOdometryPoseProvider();
 		
 		this.grid = grid;
-		currentCell = startCell;
-		pathFinder = new PathFinder(grid);
+		pathFinder = new PathFinder(grid.getGrid());
 	}
 	
 	public final void suppress() {
@@ -46,7 +45,7 @@ public class MoveBehavior implements Behavior {
 		
 		if (path.isEmpty()) {
 			Cell destination = selectDestination();
-			path = pathFinder.findPath(currentCell, destination);
+			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
 		if (!path.isEmpty() && !suppressed) {
@@ -61,25 +60,25 @@ public class MoveBehavior implements Behavior {
 	 * @return the selected destination to travel to.
 	 */
 	private Cell selectDestination() {
-		for (Cell cell : grid) {
-			cell.setDistance(currentCell.getX(), currentCell.getY());
+		for (Cell cell : grid.getGrid()) {
+			cell.setDistance(grid.getCurrentCell().getX(), grid.getCurrentCell().getY());
 		}
 		
-		Collections.sort(grid, new Comparator<Cell>() {
+		Collections.sort(grid.getGrid(), new Comparator<Cell>() {
 			  @Override
 			  public int compare(Cell a, Cell b) {
 				  return Double.compare(a.getDistance(), b.getDistance());
 			  }
 		});
 		
-		Collections.sort(grid, new Comparator<Cell>() {
+		Collections.sort(grid.getGrid(), new Comparator<Cell>() {
 			  @Override
 			  public int compare(Cell a, Cell b) {
 				  return Integer.compare(b.countUnknownNeighbours(), a.countUnknownNeighbours());
 			  }
 		});
 		
-		return grid.get(0);
+		return grid.getGrid().get(0);
 	}
 	
 	/**

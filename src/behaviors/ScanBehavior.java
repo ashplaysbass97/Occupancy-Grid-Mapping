@@ -6,18 +6,19 @@ import lejos.robotics.localization.OdometryPoseProvider;
 import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.subsumption.Behavior;
 import main.Cell;
+import main.Grid;
 import main.PilotRobot;
 import monitors.PilotMonitor;
 
 public class ScanBehavior implements Behavior {
 	private boolean suppressed = false;
-	private ArrayList<Cell> grid;
+	private Grid grid;
 	private PilotRobot myRobot;
 	private MovePilot myPilot;
 	private PilotMonitor myMonitor;
 	private OdometryPoseProvider opp;
 	
-	public ScanBehavior(PilotRobot myRobot, PilotMonitor myMonitor, ArrayList<Cell> grid) {
+	public ScanBehavior(PilotRobot myRobot, PilotMonitor myMonitor, Grid grid) {
 		this.myRobot = myRobot;
 		this.myMonitor = myMonitor;
 		this.grid = grid;
@@ -32,7 +33,7 @@ public class ScanBehavior implements Behavior {
 	
 	public final boolean takeControl() {
 		// TODO if in new cell that hasn't been visited before
-		return true;
+		return false;
 	}
 
 	public final void action() {
