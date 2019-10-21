@@ -44,12 +44,20 @@ public class MoveBehavior implements Behavior {
 
 	public final void action() {
 		suppressed = false;
+		Cell destination = null;
 		
+		// select a destination and build the path
 		if (path.isEmpty()) {
-			Cell destination = grid.areCellsUnknown() ? selectDestination() : grid.findUsingCoordinate(0, 0);
+			destination = grid.areCellsUnknown() ? selectDestination() : grid.findUsingCoordinate(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
+		// rebuild the path if the next step is occupied
+		if (path.get(0).getOccupancyProbability() == 1) {
+			path = pathFinder.findPath(grid.getCurrentCell(), destination);
+		}
+		
+		// move to the next step
 		Cell nextStep = path.remove(0);
 		followPath(nextStep.getX(), nextStep.getY());
 	}

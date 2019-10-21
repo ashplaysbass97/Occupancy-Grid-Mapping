@@ -38,8 +38,6 @@ public class Main {
 		// set up the behaviours for the arbitrator and construct it
 		Behavior b1 = new MoveBehavior(myRobot, grid);
 		Behavior b2 = new ScanBehavior(myRobot, myMonitor, grid);
-		// TODO behaviour for obstacle avoidance
-		// TODO behaviour for returning to the starting point once the map is complete
 		Behavior b3 = new ExitBehavior(myRobot, myMonitor, grid, server);
 		Behavior [] behaviorArray = {b1, b2, b3};
 		Arbitrator arbitrator = new Arbitrator(behaviorArray);
