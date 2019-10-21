@@ -57,6 +57,15 @@ public class Grid {
 		return null;
 	}
 	
+	public final boolean areCellsUnknown() {
+		for (Cell cell : grid) {
+			if (cell.getOccupancyProbability() == -1) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public final ArrayList<Cell> getGrid() {
 		return grid;
 	}

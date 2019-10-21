@@ -45,17 +45,13 @@ public class MoveBehavior implements Behavior {
 	public final void action() {
 		suppressed = false;
 		
-		// TODO if all probability are either 1 or 0, return home
 		if (path.isEmpty()) {
-			Cell destination = selectDestination();
+			Cell destination = grid.areCellsUnknown() ? selectDestination() : grid.findUsingCoordinate(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
-		if (!path.isEmpty() && !suppressed) {
-			Cell nextStep = path.remove(0);
-			followPath(nextStep.getX(), nextStep.getY());
-			Thread.yield();
-		}
+		Cell nextStep = path.remove(0);
+		followPath(nextStep.getX(), nextStep.getY());
 	}
 	
 	/**
@@ -69,17 +65,17 @@ public class MoveBehavior implements Behavior {
 		
 		ArrayList<Cell> sortableGrid = new ArrayList<>(grid.getGrid());
 		Collections.sort(sortableGrid, new Comparator<Cell>() {
-			  @Override
-			  public int compare(Cell a, Cell b) {
-				  return Double.compare(a.getDistance(), b.getDistance());
-			  }
+			@Override
+			public int compare(Cell a, Cell b) {
+				return Double.compare(a.getDistance(), b.getDistance());
+			}
 		});
 		
 		Collections.sort(sortableGrid, new Comparator<Cell>() {
-			  @Override
-			  public int compare(Cell a, Cell b) {
-				  return Integer.compare(b.countUnknownNeighbours(), a.countUnknownNeighbours());
-			  }
+			@Override
+			public int compare(Cell a, Cell b) {
+				return Integer.compare(b.countUnknownNeighbours(), a.countUnknownNeighbours());
+			}
 		});
 		
 		return sortableGrid.get(0);

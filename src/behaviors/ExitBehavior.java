@@ -4,19 +4,23 @@ import java.net.*;
 
 import lejos.hardware.Button;
 import lejos.robotics.subsumption.Behavior;
+import main.Grid;
 import main.PilotRobot;
 import monitors.PilotMonitor;
 
 public class ExitBehavior implements Behavior{
 	
 	private boolean suppressed = false;
+	private PilotRobot myRobot;
+	private PilotMonitor myMonitor;
+	private Grid grid;
 	private ServerSocket server;
-	PilotRobot myRobot;
-	PilotMonitor myMonitor;
+	private boolean isComplete = false;
 	
-	public ExitBehavior(PilotRobot robot, PilotMonitor monitor, ServerSocket socket){
+	public ExitBehavior(PilotRobot robot, PilotMonitor monitor, Grid grid, ServerSocket socket){
 		this.myRobot = robot;
 		this.myMonitor = monitor;
+		this.grid = grid;
 		this.server = socket;
 	}
 	
@@ -25,7 +29,8 @@ public class ExitBehavior implements Behavior{
 	}
 	
 	public final boolean takeControl() {
-		return Button.ESCAPE.isDown();
+		isComplete = !grid.areCellsUnknown() && grid.getCurrentCell() == grid.findUsingCoordinate(0, 0);
+		return Button.ESCAPE.isDown() || isComplete;
 	}
 
 	public final void action() {
