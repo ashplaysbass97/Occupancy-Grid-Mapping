@@ -32,8 +32,7 @@ public class ScanBehavior implements Behavior {
 	}
 	
 	public final boolean takeControl() {
-		// TODO if in new cell that hasn't been visited before
-		return false;
+		return myRobot.getScanRequired();
 	}
 
 	public final void action() {

@@ -26,12 +26,9 @@ public class Main {
 			occupancyGrid[i] = "?";
 		}
 		
-		// create grid object
+		// initalise the grid, robot and monitor
 		Grid grid = new Grid();
-
-		// initalise robot, pilot and monitor
 		PilotRobot myRobot = new PilotRobot();
-		MovePilot myPilot = myRobot.getPilot();
 		PilotMonitor myMonitor = new PilotMonitor(occupancyGrid);		
 
 		// start server and create PCMonitor thread

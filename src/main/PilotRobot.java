@@ -28,6 +28,7 @@ public class PilotRobot {
 	private float[] leftBumperSample, rightBumperSample, ultrasonicSample, gyroSample;
 	private MovePilot pilot;
 	private OdometryPoseProvider opp;
+	private boolean scanRequired = true;
 	private int[] gridPosition = new int[2]; //position 0 is x position y is 1
 
 	// SmartRobot constructor
@@ -148,5 +149,13 @@ public class PilotRobot {
 
 	public int getY() {
 		return this.gridPosition[1];
+	}
+	
+	public boolean getScanRequired() {
+		return scanRequired;
+	}
+	
+	public void setScanRequired(boolean scanRequired) {
+		this.scanRequired = scanRequired;
 	}
 }

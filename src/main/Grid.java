@@ -49,7 +49,7 @@ public class Grid {
 	 * @param y the y-coordinate of the cell to find
 	 * @return the corresponding cell for the coordinates provided
 	 */
-	private Cell findUsingCoordinate(int x, int y) {
+	public final Cell findUsingCoordinate(int x, int y) {
 		for (Cell cell : grid) {
 			if (cell.getX() == x && cell.getY() == y) {
 				return cell;
@@ -64,5 +64,9 @@ public class Grid {
 	
 	public final Cell getCurrentCell() {
 		return currentCell;
+	}
+	
+	public final void setCurrentCell(Cell currentCell) {
+		this.currentCell = currentCell;
 	}
 }

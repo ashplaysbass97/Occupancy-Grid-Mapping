@@ -13,6 +13,7 @@ import main.PilotRobot;
 
 public class MoveBehavior implements Behavior {
 	private boolean suppressed = false;
+	private PilotRobot myRobot;
 	private MovePilot myPilot;
 	private OdometryPoseProvider opp;
 	private Grid grid;
@@ -25,6 +26,7 @@ public class MoveBehavior implements Behavior {
 	private static final int HEADING_SOUTH = 180;
 	
 	public MoveBehavior(PilotRobot myRobot, Grid grid) {
+		this.myRobot = myRobot;
 		myPilot = myRobot.getPilot();
 		opp = myRobot.getOdometryPoseProvider();
 		
@@ -99,7 +101,15 @@ public class MoveBehavior implements Behavior {
 		
 		// TODO figure out the correct distance to travel
 		myPilot.travel(1);
+		
+		// set pose and current cell of grid object
 		opp.setPose(new Pose(x, y, opp.getPose().getHeading()));
+		grid.setCurrentCell(grid.findUsingCoordinate(x, y));
+		
+		// only scan neighbours if cell hasn't already been visited
+		if (!grid.getCurrentCell().hasBeenVisited()) {
+			myRobot.setScanRequired(true);
+		}
 	}
 
 	/**

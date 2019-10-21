@@ -10,6 +10,7 @@ public class Cell {
 	private double distance;
 	private String status = "unknown";
 	private Cell previousCell;
+	private boolean visited = false;
 	private ArrayList<Cell> neighbours = new ArrayList<Cell>();
 	
 	public Cell (int x, int y) {
@@ -98,6 +99,14 @@ public class Cell {
 	
 	public final void setNeighbours(ArrayList<Cell> neighbours) {
 		this.neighbours = neighbours;
+	}
+	
+	public final void visit() {
+		visited = true;
+	}
+	
+	public final boolean hasBeenVisited() {
+		return visited;
 	}
 	
 }
