@@ -10,7 +10,7 @@ import main.Cell;
 import main.PathFinder;
 import main.PilotRobot;
 
-public class MoveBehavior implements Behavior  {
+public class MoveBehavior implements Behavior {
 	private boolean suppressed = false;
 	private MovePilot myPilot;
 	private OdometryPoseProvider opp;
