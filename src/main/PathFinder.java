@@ -39,7 +39,7 @@ public class PathFinder {
 				if (currentCell == destinationCell) {
 					Cell tmpCell = currentCell;
 					path.add(tmpCell);
-					while (tmpCell.getPreviousCell() != null) {
+					while (tmpCell.getPreviousCell() != null && tmpCell.getPreviousCell() != startCell) {
 						path.add(tmpCell.getPreviousCell());
 						tmpCell = tmpCell.getPreviousCell();
 					}

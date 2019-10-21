@@ -30,8 +30,7 @@ public class ExitBehavior implements Behavior{
 
 	public final void action() {
 		suppressed = false;
-        // stop the monitor thread and close the robot and close the server
+		// TODO stop the monitor thread, close the robot and close the server
 		System.exit(0);
-//		System.out.println("Next destination: (" + destination.getX() + ", " + destination.getY() + ").");
 	}
 }

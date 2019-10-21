@@ -13,40 +13,41 @@ import monitors.PCMonitor;
 import monitors.PilotMonitor;
 
 public class Main {
-	//server port between pc client and robot
+	// server port between pc client and robot
 	public static final int port = 1234;
 
-	//Grid storing weather certain cells are unexplored.
+	// grid storing weather certain cells are unexplored.
 	private static ArrayList<Cell> grid = new ArrayList<Cell>();
 	private static Cell currentCell;
 
 	private static final int GRID_WIDTH = 7;
 	private static final int GRID_HEIGHT = 6;
 
-	//Server socket used between robot and pc client.
+	// server socket used between robot and pc client.
 	private static ServerSocket server;
 
 	private static String[] occupancyGrid = new String[42];
 
 	public static void main(String[] args) {
 
-	  //Give starting values to occupancyGrid (Grid position 0 is 0.0 since this is where the robot is assumed to start.);
-	  occupancyGrid[0] = "0.0";
-	  for (int i = 1; i < 42; i++) {
-	    occupancyGrid[i] = "?";
-	  }
-  	// create grid and set neighbours
-        createGrid();
-        setNeighbours();
-        currentCell = findUsingCoordinate(0, 0);
-        findUsingCoordinate(0, 0).setStatus("clear");
+		// give starting values to occupancyGrid (Grid position 0 is 0.0 since this is where the robot is assumed to start.);
+		occupancyGrid[0] = "0.0";
+		for (int i = 1; i < 42; i++) {
+			occupancyGrid[i] = "?";
+		}
+		
+		// create grid and set neighbours
+		createGrid();
+		setNeighbours();
+		currentCell = findUsingCoordinate(0, 0);
+		findUsingCoordinate(0, 0).setStatus("clear");
 
-    //initalise robot and pilot and monitor
+		// initalise robot and pilot and monitor
 		PilotRobot myRobot = new PilotRobot();
 		MovePilot myPilot = myRobot.getPilot();
 		PilotMonitor myMonitor = new PilotMonitor(occupancyGrid);		
 
-		//Start server and create PCMonitor thread;
+		// start server and create PCMonitor thread
 		PCMonitor pcMonitor = null;
 		try {
 			server = new ServerSocket(port);
@@ -58,17 +59,9 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		//start pcMonitor
-		pcMonitor.start();
-
-		// start the robot monitor
+		// start the monitors
 		myMonitor.start();
-
-		// test the pilot
-		myPilot.travel(5);
-		myPilot.rotate(45);
-
-
+		pcMonitor.start();
 
 		// set up the behaviours for the arbitrator and construct it
 		Behavior b1 = new MoveBehavior(myRobot, grid, currentCell);
@@ -100,8 +93,8 @@ public class Main {
 			for (int x = 0; x < GRID_WIDTH; x++) {
 				ArrayList<Cell> neighbours = new ArrayList<Cell>();
 				if (x != 0) neighbours.add(findUsingCoordinate(x - 1, y));
-				if (x != GRID_HEIGHT - 1) neighbours.add(findUsingCoordinate(x + 1, y));
-				if (y != GRID_WIDTH - 1) neighbours.add(findUsingCoordinate(x, y + 1));
+				if (x != GRID_WIDTH - 1) neighbours.add(findUsingCoordinate(x + 1, y));
+				if (y != GRID_HEIGHT - 1) neighbours.add(findUsingCoordinate(x, y + 1));
 				if (y != 0) neighbours.add(findUsingCoordinate(x, y - 1));
 				findUsingCoordinate(x, y).setNeighbours(neighbours);
 			}
