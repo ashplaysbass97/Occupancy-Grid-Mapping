@@ -6,9 +6,10 @@ import lejos.hardware.motor.EV3MediumRegulatedMotor;
 
 public class Sensor {
 	
+	Brick myEV3 = BrickFinder.getDefault();
 	Port sensorPort = LocalEV3.get().getPort("S2");
 	EV3UltrasonicSensor sensor = new EV3UltrasonicSensor(sensorPort);
-	EV3MediumRegulatedMotor sensorMotor = new EV3MediumRegulatedMotor(sensorPort);
+	EV3MediumRegulatedMotor sensorMotor = new EV3MediumRegulatedMotor(myEV3.getPort("C"));
 	int distance;
 	
 	
@@ -27,10 +28,10 @@ public class Sensor {
 		return distance;
 	}
 	
-	public void sensorRotateRight() {
+	public void sensorRotateLeft() {
 		sensorMotor.rotateTo(90);
 	}
-	public void sensorRotateLeft() {
+	public void sensorRotateRight() {
 		sensorMotor.rotateTo(-90);
 	}
 	public void SensorRotateCentre() {
