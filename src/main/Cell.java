@@ -4,14 +4,15 @@ import java.util.*;
 public class Cell {
 	private int x;
 	private int y;
+	private double distance;
+	private boolean hasBeenVisited = false;
+	private double occupancyProbability = -1; // -1: unknown, 0: empty, 1: occupied
+	private ArrayList<Cell> neighbours = new ArrayList<Cell>();
+	
 	private int f = 0; // cost estimate
 	private int g = 0; // cost of the path from the start node to the destination
 	private int h = 0; // heuristic that estimates the cost of the cheapest path from the start node to the destination
-	private double distance;
-	private String status = "unknown";
 	private Cell previousCell;
-	private boolean visited = false;
-	private ArrayList<Cell> neighbours = new ArrayList<Cell>();
 	
 	public Cell (int x, int y) {
 		this.x = x;
@@ -21,32 +22,13 @@ public class Cell {
 	public final int countUnknownNeighbours() {
 		int count = 0;
 		for (Cell neighbour : neighbours) {
-			if (neighbour.getStatus() == "unknown") count++;
+			if (neighbour.getOccupancyProbability() == -1) count++;
 		}
 		return count;
 	}
 	
-	public final void print() {
-		System.out.println(x + ", " + y);
-	}
-	
-	public final void printNeighbours() {
-		System.out.println("Cell (" + x + ", " + y + ") has " + neighbours.size() + " neighbour(s):");
-		for (Cell neighbour : neighbours) {
-			neighbour.print();
-		}
-	}
-	
-	public final int getF() {
-		return f;
-	}
-	
-	public final int getG() {
-		return g;
-	}
-	
-	public final int getH() {
-		return h;
+	public final String toString() {
+		return "(" + x + ", " + y + ")";
 	}
 	
 	public final int getX() {
@@ -61,16 +43,48 @@ public class Cell {
 		return distance;
 	}
 	
-	public final String getStatus() {
-		return status;
+	public final boolean hasBeenVisited() {
+		return hasBeenVisited;
+	}
+	
+	public final double getOccupancyProbability() {
+		return occupancyProbability;
+	}
+	
+	public final ArrayList<Cell> getNeighbours() {
+		return neighbours;
+	}
+	
+	public final int getF() {
+		return f;
+	}
+	
+	public final int getG() {
+		return g;
+	}
+	
+	public final int getH() {
+		return h;
 	}
 	
 	public final Cell getPreviousCell() {
 		return previousCell;
 	}
 	
-	public final ArrayList<Cell> getNeighbours() {
-		return neighbours;
+	public final void setDistance(int x, int y) {
+		distance = Math.sqrt((y - this.y) * (y - this.y) + (x - this.x) * (x - this.x));
+	}
+	
+	public final void visit() {
+		hasBeenVisited = true;
+	}
+	
+	public final void setOccupancyProbability(double occupancyProbability) {
+		this.occupancyProbability = occupancyProbability;
+	}
+	
+	public final void setNeighbours(ArrayList<Cell> neighbours) {
+		this.neighbours = neighbours;
 	}
 	
 	public final void setF(int f) {
@@ -85,28 +99,7 @@ public class Cell {
 		this.h = h;
 	}
 	
-	public final void setDistance(int x, int y) {
-		distance = Math.sqrt((y - this.y) * (y - this.y) + (x - this.x) * (x - this.x));
-	}
-	
-	public final void setStatus(String status) {
-		this.status = status;
-	}
-	
 	public final void setPreviousCell(Cell previousCell) {
 		this.previousCell = previousCell;
 	}
-	
-	public final void setNeighbours(ArrayList<Cell> neighbours) {
-		this.neighbours = neighbours;
-	}
-	
-	public final void visit() {
-		visited = true;
-	}
-	
-	public final boolean hasBeenVisited() {
-		return visited;
-	}
-	
 }

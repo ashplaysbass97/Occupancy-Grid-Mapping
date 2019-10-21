@@ -12,8 +12,7 @@ public class Grid {
 	public Grid() {
 		createGrid();
 		setNeighbours();
-		currentCell = findUsingCoordinate(0, 0);
-		findUsingCoordinate(0, 0).setStatus("clear");
+		setCurrentCell(findUsingCoordinate(0, 0));
 	}
 	
 	/**
@@ -68,5 +67,6 @@ public class Grid {
 	
 	public final void setCurrentCell(Cell currentCell) {
 		this.currentCell = currentCell;
+		currentCell.setOccupancyProbability(0);
 	}
 }

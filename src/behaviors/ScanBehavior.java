@@ -32,7 +32,7 @@ public class ScanBehavior implements Behavior {
 	}
 	
 	public final boolean takeControl() {
-		return myRobot.getScanRequired();
+		return myRobot.isScanRequired();
 	}
 
 	public final void action() {

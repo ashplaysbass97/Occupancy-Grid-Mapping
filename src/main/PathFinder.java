@@ -18,8 +18,8 @@ public class PathFinder {
 		openCells.add(startCell); // add startCell to openCells
 		
 		for (Cell cell : grid) {
-			// add obstacles and blocked cells to closedCells
-			if (cell.getStatus() == "obstacle" || cell.getStatus() == "blocked") {
+			// add occupied cells to closedCells
+			if (cell.getOccupancyProbability() == 1) {
 				closedCells.add(cell);
 			}
 			cell.setPreviousCell(null); // remove all previous cells
@@ -77,7 +77,7 @@ public class PathFinder {
 			} else {
 				isPathFound = true;
 				return null;
-			}	
+			}
 		}
 		return null;
 	}

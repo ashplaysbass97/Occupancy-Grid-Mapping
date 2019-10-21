@@ -121,13 +121,13 @@ public class PilotRobot {
 	}
 
 	// get the robots current angle
-	public float getAngle() {
+	public final float getAngle() {
 		gyroSampleProvider.fetchSample(gyroSample, 0);
 		return gyroSample[0];
 	}
 
 	// get the robots current battery voltage
-	public float getBatteryVoltage() {
+	public final float getBatteryVoltage() {
 		return Battery.getVoltage();
 	}
 
@@ -151,11 +151,11 @@ public class PilotRobot {
 		return this.gridPosition[1];
 	}
 	
-	public boolean getScanRequired() {
+	public final boolean isScanRequired() {
 		return scanRequired;
 	}
 	
-	public void setScanRequired(boolean scanRequired) {
+	public final void setScanRequired(boolean scanRequired) {
 		this.scanRequired = scanRequired;
 	}
 }
