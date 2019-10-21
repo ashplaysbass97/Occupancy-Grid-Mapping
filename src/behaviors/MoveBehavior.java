@@ -66,21 +66,22 @@ public class MoveBehavior implements Behavior {
 			cell.setDistance(grid.getCurrentCell().getX(), grid.getCurrentCell().getY());
 		}
 		
-		Collections.sort(grid.getGrid(), new Comparator<Cell>() {
+		ArrayList<Cell> sortableGrid = new ArrayList<>(grid.getGrid());
+		Collections.sort(sortableGrid, new Comparator<Cell>() {
 			  @Override
 			  public int compare(Cell a, Cell b) {
 				  return Double.compare(a.getDistance(), b.getDistance());
 			  }
 		});
 		
-		Collections.sort(grid.getGrid(), new Comparator<Cell>() {
+		Collections.sort(sortableGrid, new Comparator<Cell>() {
 			  @Override
 			  public int compare(Cell a, Cell b) {
 				  return Integer.compare(b.countUnknownNeighbours(), a.countUnknownNeighbours());
 			  }
 		});
 		
-		return grid.getGrid().get(0);
+		return sortableGrid.get(0);
 	}
 	
 	/**

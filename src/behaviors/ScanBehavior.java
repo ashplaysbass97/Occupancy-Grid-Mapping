@@ -37,5 +37,12 @@ public class ScanBehavior implements Behavior {
 
 	public final void action() {
 		suppressed = false;
+		if (!suppressed) {
+			// TODO scan neighbours properly
+			for (Cell neighbour : grid.getCurrentCell().getNeighbours()) {
+				neighbour.setOccupancyProbability(0); // just sets them to empty
+			}
+			
+		}
 	}
 }
