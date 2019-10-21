@@ -29,12 +29,9 @@ public class PilotRobot {
 	private MovePilot pilot;
 	private OdometryPoseProvider opp;
 	private boolean scanRequired = true;
-	private int[] gridPosition = new int[2]; //position 0 is x position y is 1
 
 	// SmartRobot constructor
 	public PilotRobot() {
-		gridPosition[0] = 0;
-		gridPosition[1] = 0;
 		ev3 = BrickFinder.getDefault();
 		setupGyroSensor();
 		setupTouchSensor();
@@ -136,19 +133,6 @@ public class PilotRobot {
 		leftBumper.close();
 		rightBumper.close();
 		ultrasonicSensor.close();
-	}
-
-	public void setGridPosition(int x, int y) {
-		this.gridPosition[0] = x;
-		this.gridPosition[1] = y;
-	}
-
-	public int getX() {
-		return this.gridPosition[0];
-	}
-
-	public int getY() {
-		return this.gridPosition[1];
 	}
 	
 	public final boolean isScanRequired() {

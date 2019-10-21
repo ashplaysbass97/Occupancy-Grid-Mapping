@@ -1,10 +1,13 @@
 package monitors;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 
 import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.GraphicsLCD;
+import main.Grid;
 
 public class PilotMonitor extends Thread {
 	private volatile boolean running = true;
@@ -12,9 +15,9 @@ public class PilotMonitor extends Thread {
 	private final int gridWidth = 7;
 	private final int gridHeight= 6;
 	private int cellCounter;
-	private  String[] grid;
+	private Grid grid;
 
-	public PilotMonitor(String[] grid) {
+	public PilotMonitor(Grid grid) {
 		this.setDaemon(true);
 		lcd = LocalEV3.get().getGraphicsLCD();
 		this.grid = grid;
@@ -73,16 +76,18 @@ public class PilotMonitor extends Thread {
 	    This column will contain the probability of an obstacle occupying that position on the
 	      grid.*/
 	  for (int i = 0; i < 7; i++) {
-	    String probability= grid[cellCounter];
+	    double probability = grid.getGrid().get(cellCounter).getOccupancyProbability();
 	    cellCounter++;
 
 	    //check if probaility is unknown
-	    if (probability == "?") {
+	    if (probability == -1) {
 	      //Add empty characters before and after the ? symbol so it centers in lcd grid cell.
 	      rowString += " ? ";
 	    } else {
 	      //only display 1 significant digit and since probaility does not go greater than 1 we can assume this will be 3 characters.
-	      rowString += probability.substring(0,3);
+	      BigDecimal bd = new BigDecimal(probability);
+	      bd = bd.round(new MathContext(3));
+	      rowString += bd.doubleValue();
 	    }
 
 	    rowString += "|";

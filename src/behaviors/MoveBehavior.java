@@ -45,6 +45,7 @@ public class MoveBehavior implements Behavior {
 	public final void action() {
 		suppressed = false;
 		
+		// TODO if all probability are either 1 or 0, return home
 		if (path.isEmpty()) {
 			Cell destination = selectDestination();
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);

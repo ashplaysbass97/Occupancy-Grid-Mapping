@@ -42,7 +42,7 @@ public class ScanBehavior implements Behavior {
 			for (Cell neighbour : grid.getCurrentCell().getNeighbours()) {
 				neighbour.setOccupancyProbability(0); // just sets them to empty
 			}
-			
+			myRobot.setScanRequired(false);
 		}
 	}
 }
