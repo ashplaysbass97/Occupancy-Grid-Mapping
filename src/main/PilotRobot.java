@@ -78,7 +78,10 @@ public class PilotRobot {
 		Wheel rightWheel = WheeledChassis.modelWheel(Motor.D, 4.05).offset(4.9);
 		Chassis myChassis = new WheeledChassis(new Wheel[] { leftWheel, rightWheel }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(myChassis);
-		pilot.setLinearSpeed(10);
+		pilot.setLinearAcceleration(5);
+		pilot.setLinearSpeed(25);
+		pilot.setAngularAcceleration(45);
+		pilot.setAngularSpeed(90);
 	}
 	
 	/**

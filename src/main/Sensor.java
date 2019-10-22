@@ -1,4 +1,6 @@
 package main;
+import lejos.hardware.Brick;
+import lejos.hardware.BrickFinder;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3UltrasonicSensor;

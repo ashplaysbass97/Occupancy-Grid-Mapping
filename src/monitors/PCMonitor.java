@@ -56,10 +56,10 @@ public class PCMonitor extends Thread {
 			 * and motor status
 			 */
 			out.println("Battery: " + robot.getBatteryVoltage());
-			out.println("Left touch sensor: " /*+ robot.isLeftBumperPressed()*/);
-			out.println("Right touch sensor: " /*+ robot.isRightBumperPressed()*/);
-			out.println("Sonar distance: " /*+ robot.getDistance()*/);
-			out.println("Gyro angle: " /*+ robot.getAngle()*/);
+			out.println("Left touch sensor: " + robot.isLeftBumperPressed());
+			out.println("Right touch sensor: " + robot.isRightBumperPressed());
+			out.println("Sonar distance: " + robot.getDistance());
+			out.println("Gyro angle: " + robot.getAngle());
 			if (robot.getPilot().isMoving()) {
 				out.println("Motor status: " + "Moving");
 			} else {
@@ -68,10 +68,10 @@ public class PCMonitor extends Thread {
 			out.println("  type: " + robot.getPilot().getMovement().getMoveType());
 			String probabilityData = "";
 			for (Cell cell : grid.getGrid()) {
-				probabilityData += cell.toString() + ",";
+				probabilityData += cell.getX() + "," + cell.getY();
 			}
 			out.println(probabilityData);
-			out.println(grid.getCurrentCell().toString());
+			out.println(grid.getCurrentCell().getX() + "," + grid.getCurrentCell().getY());
 			out.flush();
 			try {
 				sleep(400);
