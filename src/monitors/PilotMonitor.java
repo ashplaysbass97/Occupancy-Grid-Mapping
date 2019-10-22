@@ -84,10 +84,12 @@ public class PilotMonitor extends Thread {
 	      //Add empty characters before and after the ? symbol so it centers in lcd grid cell.
 	      rowString += " ? ";
 	    } else {
-	      //only display 1 significant digit and since probaility does not go greater than 1 we can assume this will be 3 characters.
-	      BigDecimal bd = new BigDecimal(probability);
-	      bd = bd.round(new MathContext(3));
-	      rowString += bd.doubleValue();
+	      /*only displays 1 decimal place due to limitation of lcd screen size
+	      /    and since probability does not go greater than 1 we can assume this will be 3 characters.*/
+//	      BigDecimal bd = new BigDecimal(probability);
+//	      bd = bd.round(new MathContext(3));
+	        //rounds to 1 decimal place 
+	        rowString += Math.round(probability*10)/10.0;
 	    }
 
 	    rowString += "|";

@@ -76,8 +76,8 @@ public class PCClient extends JFrame {
 		lRobotStats.setText("null");
 		
 		//IP of the robot
-		String ip = "192.168.70.163"; 
-		// String ip = "192.168.0.35"; 
+//		String ip = "192.168.70.163"; 
+		 String ip = "192.168.0.35"; 
 		
 		if(args.length > 0)
 			ip = args[0];
@@ -116,10 +116,17 @@ public class PCClient extends JFrame {
 			//fill in display grid with occupation probablities and robot position.
 			gridProbabilities = in.readLine().split(",");
 			String currentCord = in.readLine();
+			System.out.println("currentCord: " + currentCord);
 			int x = Integer.parseInt(currentCord.split(",")[0]);
 			int y = Integer.parseInt(currentCord.split(",")[1]);
 			for (int i = 0; i < gridProbabilities.length; i++) {
-			lOccupancyProbabilities[i].setText(gridProbabilities[i]);
+			    System.out.println(gridProbabilities[i]);
+			    if (gridProbabilities[i] == "-1") {
+			      lOccupancyProbabilities[i].setText("?");
+			    } else {
+			      lOccupancyProbabilities[i].setText(gridProbabilities[i]);
+			    }
+			    
 				if (((y*7) + x) != i) {
 					robotStates[i].setIcon(null);
 				} else {

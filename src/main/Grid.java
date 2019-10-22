@@ -78,4 +78,8 @@ public class Grid {
 		this.currentCell = currentCell;
 		currentCell.setOccupancyProbability(0);
 	}
+	
+	public Cell getCell(int x, int y) {
+	  return grid.get((y * 7) + x);
+	}
 }

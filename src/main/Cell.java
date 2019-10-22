@@ -13,6 +13,7 @@ public class Cell {
 	private int g = 0; // cost of the path from the start node to the destination
 	private int h = 0; // heuristic that estimates the cost of the cheapest path from the start node to the destination
 	private Cell previousCell;
+	private int noOfSensorReadings = 0;
 	
 	public Cell (int x, int y) {
 		this.x = x;
@@ -28,7 +29,7 @@ public class Cell {
 	}
 	
 	public final String toString() {
-		return "(" + x + ", " + y + ")";
+		return x + "," + y;
 	}
 	
 	public final int getX() {
@@ -101,5 +102,13 @@ public class Cell {
 	
 	public final void setPreviousCell(Cell previousCell) {
 		this.previousCell = previousCell;
+	}
+	
+	public int getNoOfSensorReadings() {
+	  return noOfSensorReadings;
+	}
+	
+	public void addSensorReading( ) {
+	  noOfSensorReadings++;
 	}
 }

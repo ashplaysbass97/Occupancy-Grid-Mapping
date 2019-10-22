@@ -68,7 +68,7 @@ public class PCMonitor extends Thread {
 			out.println("  type: " + robot.getPilot().getMovement().getMoveType());
 			String probabilityData = "";
 			for (Cell cell : grid.getGrid()) {
-				probabilityData += cell.toString() + ",";
+				probabilityData += cell.getOccupancyProbability() + ",";
 			}
 			out.println(probabilityData);
 			out.println(grid.getCurrentCell().toString());
