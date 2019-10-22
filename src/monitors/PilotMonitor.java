@@ -12,9 +12,6 @@ import main.Grid;
 public class PilotMonitor extends Thread {
 	private volatile boolean running = true;
 	private GraphicsLCD lcd;
-	private final int gridWidth = 7;
-	private final int gridHeight= 6;
-	private int cellCounter;
 	private Grid grid;
 
 	public PilotMonitor(Grid grid) {
@@ -30,12 +27,6 @@ public class PilotMonitor extends Thread {
             lcd.setFont(Font.getSmallFont());
             cellCounter = 0;
             updateMap();
-//        	lcd.drawString("Left Bumper: " + myRobot.isLeftBumperPressed(), 0, 20, 0);
-//        	lcd.drawString("Right Bumper: " + myRobot.isRightBumperPressed(), 0, 30, 0);
-//        	lcd.drawString("Distance: " + myRobot.getDistance(), 0, 40, 0);
-//        	lcd.drawString("Angle: "+myRobot.getAngle(), 0, 50, 0);
-//        	lcd.drawString("Motion: "+myRobot.getPilot().isMoving(), 0, 60, 0);
-//            lcd.drawString("  type: "+myRobot.getPilot().getMovement().getMoveType(), 0, 70, 0);
 
     		try {
 				sleep(500);
@@ -88,7 +79,7 @@ public class PilotMonitor extends Thread {
 	      /    and since probability does not go greater than 1 we can assume this will be 3 characters.*/
 //	      BigDecimal bd = new BigDecimal(probability);
 //	      bd = bd.round(new MathContext(3));
-	        //rounds to 1 decimal place 
+	        //rounds to 1 decimal place
 	        rowString += Math.round(probability*10)/10.0;
 	    }
 

@@ -2,7 +2,9 @@ package main;
 import lejos.hardware.Battery;
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.motor.Motor;
+import lejos.hardware.motor.NXTRegulatedMotor;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -23,6 +25,7 @@ public class PilotRobot {
 	private Brick ev3;
 	private EV3TouchSensor leftBumper, rightBumper;
 	private EV3UltrasonicSensor ultrasonicSensor;
+	// private NXTRegulatedMotor ultrasonicSensorMotor;
 	private EV3GyroSensor gyroSensor;
 	private SampleProvider leftBumperSampleProvider, rightBumperSampleProvider, ultrasonicSampleProvider, gyroSampleProvider;
 	private float[] leftBumperSample, rightBumperSample, ultrasonicSample, gyroSample;
@@ -68,6 +71,7 @@ public class PilotRobot {
 		ultrasonicSensor = new EV3UltrasonicSensor(ev3.getPort("S2"));
 		ultrasonicSampleProvider = ultrasonicSensor.getDistanceMode();
 		ultrasonicSample = new float[ultrasonicSampleProvider.sampleSize()];
+		// ultrasonicSensorMotor = new NXTRegulatedMotor(ev3.getPort("C"));
 	}
 	
 	public EV3UltrasonicSensor getUltrasonicSensor() {
@@ -82,7 +86,10 @@ public class PilotRobot {
 		Wheel rightWheel = WheeledChassis.modelWheel(Motor.D, 4.05).offset(4.9);
 		Chassis myChassis = new WheeledChassis(new Wheel[] { leftWheel, rightWheel }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(myChassis);
-		pilot.setLinearSpeed(10);
+		pilot.setLinearAcceleration(5);
+		pilot.setLinearSpeed(25);
+		pilot.setAngularAcceleration(45);
+		pilot.setAngularSpeed(90);
 	}
 	
 	/**
@@ -108,7 +115,7 @@ public class PilotRobot {
 	// get the distance from the ultrasonic sensor
 	public final float getDistance() {
 		ultrasonicSampleProvider.fetchSample(ultrasonicSample, 0);
-		return ultrasonicSample[0];
+		return ultrasonicSample[0] * 100;
 	}
 
 	// get the pilot object from the robot
@@ -145,5 +152,17 @@ public class PilotRobot {
 	
 	public final void setScanRequired(boolean scanRequired) {
 		this.scanRequired = scanRequired;
+	}
+	
+	public final void rotateSensorLeft() {
+		Motor.C.rotateTo(90);
+	}
+	
+	public final void rotateSensorRight() {
+		Motor.C.rotateTo(-90);
+	}
+	
+	public final void rotateSensorCentre() {
+		Motor.C.rotateTo(0);
 	}
 }

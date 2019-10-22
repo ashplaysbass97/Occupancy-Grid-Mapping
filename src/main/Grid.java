@@ -70,6 +70,14 @@ public class Grid {
 		return grid;
 	}
 	
+	public final int getGridHeight() {
+		return GRID_HEIGHT;
+	}
+	
+	public final int getGridWidth() {
+		return GRID_WIDTH;
+	}
+	
 	public final Cell getCurrentCell() {
 		return currentCell;
 	}

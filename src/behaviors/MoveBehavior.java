@@ -52,8 +52,8 @@ public class MoveBehavior implements Behavior {
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
-		// rebuild the path if the next step is occupied
 		if (path.get(0).getOccupancyProbability() == 1) {
+			destination = grid.areCellsUnknown() ? selectDestination() : grid.findUsingCoordinate(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
@@ -106,7 +106,7 @@ public class MoveBehavior implements Behavior {
 		}
 		
 		// TODO figure out the correct distance to travel
-		myPilot.travel(1);
+		myPilot.travel(25);
 		
 		// set pose and current cell of grid object
 		opp.setPose(new Pose(x, y, opp.getPose().getHeading()));
