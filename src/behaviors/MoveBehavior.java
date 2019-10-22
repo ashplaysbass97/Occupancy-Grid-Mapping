@@ -57,9 +57,14 @@ public class MoveBehavior implements Behavior {
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
-		// move to the next step
-		Cell nextStep = path.remove(0);
-		followPath(nextStep.getX(), nextStep.getY());
+		if (path != null) {
+			// move to the next step
+			Cell nextStep = path.remove(0);
+			followPath(nextStep.getX(), nextStep.getY());
+		} else {
+			// TODO separate option for blocked cells
+			destination.setOccupancyProbability(1);
+		}
 	}
 	
 	/**
@@ -68,25 +73,24 @@ public class MoveBehavior implements Behavior {
 	 */
 	private Cell selectDestination() {
 		for (Cell cell : grid.getGrid()) {
-			cell.setDistance(grid.getCurrentCell().getX(), grid.getCurrentCell().getY());
+			cell.setValue(grid.getCurrentCell().getX(), grid.getCurrentCell().getY());
 		}
 		
 		ArrayList<Cell> sortableGrid = new ArrayList<>(grid.getGrid());
 		Collections.sort(sortableGrid, new Comparator<Cell>() {
 			@Override
 			public int compare(Cell a, Cell b) {
-				return Double.compare(a.getDistance(), b.getDistance());
+				return Double.compare(a.getValue(), b.getValue());
 			}
 		});
 		
-		Collections.sort(sortableGrid, new Comparator<Cell>() {
-			@Override
-			public int compare(Cell a, Cell b) {
-				return Integer.compare(b.countUnknownNeighbours(), a.countUnknownNeighbours());
+		for (Cell cell : sortableGrid) {
+			if (cell.getOccupancyProbability() != 1 && !(cell.getOccupancyProbability() == 0 && cell.countUnknownNeighbours() == 0)) {
+				return cell;
 			}
-		});
+		}
 		
-		return sortableGrid.get(0);
+		return null;
 	}
 	
 	/**

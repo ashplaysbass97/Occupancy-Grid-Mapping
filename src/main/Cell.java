@@ -4,7 +4,7 @@ import java.util.*;
 public class Cell {
 	private int x;
 	private int y;
-	private double distance;
+	private double value;
 	private boolean hasBeenVisited = false;
 	private double occupancyProbability = -1; // -1: unknown, 0: empty, 1: occupied
 	private ArrayList<Cell> neighbours = new ArrayList<Cell>();
@@ -40,8 +40,8 @@ public class Cell {
 		return y;
 	}
 	
-	public final double getDistance() {
-		return distance;
+	public final double getValue() {
+		return value;
 	}
 	
 	public final boolean hasBeenVisited() {
@@ -72,8 +72,9 @@ public class Cell {
 		return previousCell;
 	}
 	
-	public final void setDistance(int x, int y) {
-		distance = Math.sqrt((y - this.y) * (y - this.y) + (x - this.x) * (x - this.x));
+	public final void setValue(int x, int y) {
+		double distance = Math.sqrt((y - this.y) * (y - this.y) + (x - this.x) * (x - this.x));
+		value = 4 - countUnknownNeighbours() + distance;
 	}
 	
 	public final void visit() {
