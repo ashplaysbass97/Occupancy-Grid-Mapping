@@ -8,6 +8,7 @@ import lejos.robotics.subsumption.Behavior;
 import main.Cell;
 import main.Grid;
 import main.PilotRobot;
+import main.Sensor;
 import monitors.PilotMonitor;
 
 public class ScanBehavior implements Behavior {
@@ -17,11 +18,13 @@ public class ScanBehavior implements Behavior {
 	private MovePilot myPilot;
 	private PilotMonitor myMonitor;
 	private OdometryPoseProvider opp;
+	private Sensor ultrasound;
 	
 	public ScanBehavior(PilotRobot myRobot, PilotMonitor myMonitor, Grid grid) {
 		this.myRobot = myRobot;
 		this.myMonitor = myMonitor;
 		this.grid = grid;
+		this.ultrasound = new Sensor(myRobot, grid);
 		
 		myPilot = myRobot.getPilot();
 		opp = myRobot.getOdometryPoseProvider();
@@ -67,30 +70,18 @@ public class ScanBehavior implements Behavior {
 			}
 			
 			if (left != null) {
-				myRobot.rotateSensorLeft();
-				if (myRobot.getDistance() < 25) {
-					left.setOccupancyProbability(1);
-				} else {
-					left.setOccupancyProbability(0);
-				}
+			  ultrasound.sensorRotateLeft();
+			  ultrasound.calculateCellsInSonarCone();
 			}
 			
 			if (right != null) {
-				myRobot.rotateSensorRight();
-				if (myRobot.getDistance() < 25) {
-					right.setOccupancyProbability(1);
-				} else {
-					right.setOccupancyProbability(0);
-				}
+			  ultrasound.sensorRotateRight();
+              ultrasound.calculateCellsInSonarCone();
 			}
 			
 			if (inFront != null) {
-				myRobot.rotateSensorCentre();
-				if (myRobot.getDistance() < 25) {
-					inFront.setOccupancyProbability(1);
-				} else {
-					inFront.setOccupancyProbability(0);
-				}
+			  ultrasound.sensorRotateCentre();
+              ultrasound.calculateCellsInSonarCone();
 			}
 			myRobot.setScanRequired(false);
 		}

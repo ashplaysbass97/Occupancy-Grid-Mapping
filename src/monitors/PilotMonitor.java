@@ -13,6 +13,7 @@ public class PilotMonitor extends Thread {
 	private volatile boolean running = true;
 	private GraphicsLCD lcd;
 	private Grid grid;
+	private int cellCounter;
 
 	public PilotMonitor(Grid grid) {
 		this.setDaemon(true);
@@ -47,7 +48,7 @@ public class PilotMonitor extends Thread {
 
 	  int columnCount = 0;
 	  //For every row in the occupancy grid fill in the string for row i.
-	  for (int i = 0; i < this.gridHeight; i++) {
+	  for (int i = 0; i < grid.getGridHeight(); i++) {
 	     lcd.drawString(getRowString(), 0, (rowCounter)*10, 0);
 	     lcd.drawString("+---+---+---+---+---+---+---+", 0, (rowCounter + 1)*10, 0);
 	     rowCounter += 2;

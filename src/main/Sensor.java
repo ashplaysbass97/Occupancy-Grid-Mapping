@@ -42,7 +42,7 @@ public class Sensor {
 		sensorMotor.rotateTo(-90);
 		currentPosition = (int) (robot.getAngle() - 90);
 	}
-	public void SensorRotateCentre() {
+	public void sensorRotateCentre() {
 		sensorMotor.rotateTo(0);
 		currentPosition = (int) (robot.getAngle());
 	}
@@ -99,7 +99,7 @@ public class Sensor {
       cell.setOccupancyProbability(1 - probabilityEmpty);
 	}
 	
-	  public void calculateCellsInSonarCone(Grid grid) {
+	  public void calculateCellsInSonarCone() {
 	    //Make sure sensor reading is above the min range.
 	    double sensorReading = sensorDistance();
 	    if (!(sensorReading == 0)) {
