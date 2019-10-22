@@ -38,9 +38,59 @@ public class ScanBehavior implements Behavior {
 	public final void action() {
 		suppressed = false;
 		if (!suppressed) {
-			// TODO scan neighbours properly
-			for (Cell neighbour : grid.getCurrentCell().getNeighbours()) {
-				neighbour.setOccupancyProbability(0); // just sets them to empty
+			
+			OdometryPoseProvider opp = myRobot.getOdometryPoseProvider();
+			double heading = opp.getPose().getHeading();
+			Cell current = grid.getCurrentCell();
+			Cell left, inFront, right;
+			
+			if (heading > -45 && heading <= 45) {
+				//north
+				left = grid.findUsingCoordinate(current.getX() - 1, current.getY());
+				inFront = grid.findUsingCoordinate(current.getX(), current.getY() + 1);
+				right = grid.findUsingCoordinate(current.getX() + 1, current.getY());
+			} else if (heading > 45 && heading <= 135) {
+				//east
+				left = grid.findUsingCoordinate(current.getX(), current.getY() + 1);
+				inFront = grid.findUsingCoordinate(current.getX() + 1, current.getY());
+				right = grid.findUsingCoordinate(current.getX(), current.getY() - 1);
+			} else if (heading > -135 && heading <= -45) {
+				//west
+				left = grid.findUsingCoordinate(current.getX(), current.getY() - 1);
+				inFront = grid.findUsingCoordinate(current.getX() - 1, current.getY());
+				right = grid.findUsingCoordinate(current.getX(), current.getY() + 1);
+			} else {
+				//south
+				left = grid.findUsingCoordinate(current.getX() + 1, current.getY());
+				inFront = grid.findUsingCoordinate(current.getX(), current.getY() - 1);
+				right = grid.findUsingCoordinate(current.getX() - 1, current.getY());
+			}
+			
+			if (left != null) {
+				myRobot.rotateSensorLeft();
+				if (myRobot.getDistance() < 25) {
+					left.setOccupancyProbability(1);
+				} else {
+					left.setOccupancyProbability(0);
+				}
+			}
+			
+			if (right != null) {
+				myRobot.rotateSensorRight();
+				if (myRobot.getDistance() < 25) {
+					right.setOccupancyProbability(1);
+				} else {
+					right.setOccupancyProbability(0);
+				}
+			}
+			
+			if (inFront != null) {
+				myRobot.rotateSensorCentre();
+				if (myRobot.getDistance() < 25) {
+					inFront.setOccupancyProbability(1);
+				} else {
+					inFront.setOccupancyProbability(0);
+				}
 			}
 			myRobot.setScanRequired(false);
 		}
