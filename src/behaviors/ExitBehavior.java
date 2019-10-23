@@ -1,27 +1,22 @@
 package behaviors;
-import java.io.IOException;
-import java.net.*;
 
 import lejos.hardware.Button;
 import lejos.robotics.subsumption.Behavior;
-import main.Grid;
 import main.PilotRobot;
+import monitors.PCMonitor;
 import monitors.PilotMonitor;
 
 public class ExitBehavior implements Behavior{
 	
 	private boolean suppressed = false;
 	private PilotRobot myRobot;
-	private PilotMonitor myMonitor;
-	private Grid grid;
-	private ServerSocket server;
-	private boolean isComplete = false;
+	private PilotMonitor pilotMonitor;
+	private PCMonitor pcMonitor;
 	
-	public ExitBehavior(PilotRobot robot, PilotMonitor monitor, Grid grid, ServerSocket socket){
+	public ExitBehavior(PilotRobot robot, PilotMonitor pilotMonitor, PCMonitor pcMonitor) {
 		this.myRobot = robot;
-		this.myMonitor = monitor;
-		this.grid = grid;
-		this.server = socket;
+		this.pilotMonitor = pilotMonitor;
+		this.pcMonitor = pcMonitor;
 	}
 	
 	public final void suppress() {
@@ -29,13 +24,19 @@ public class ExitBehavior implements Behavior{
 	}
 	
 	public final boolean takeControl() {
-		isComplete = !grid.areCellsUnknown() && grid.getCurrentCell() == grid.findUsingCoordinate(0, 0);
-		return Button.ESCAPE.isDown() || isComplete;
+		// TODO take control when map finished and back in starting position
+		return Button.ESCAPE.isDown();
 	}
 
 	public final void action() {
 		suppressed = false;
-		// TODO stop the monitor thread, close the robot and close the server
-		System.exit(0);
+		
+		while (Button.ESCAPE.isDown() && !suppressed) {
+			pcMonitor.terminate();
+			pilotMonitor.terminate();
+			myRobot.closeRobot();
+			
+			System.exit(0);
+		}
 	}
 }

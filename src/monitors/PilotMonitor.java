@@ -1,9 +1,5 @@
 package monitors;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.ArrayList;
 
-import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.GraphicsLCD;
@@ -13,13 +9,11 @@ public class PilotMonitor extends Thread {
 	private volatile boolean running = true;
 	private GraphicsLCD lcd;
 	private Grid grid;
-	private int cellCounter;
 
 	public PilotMonitor(Grid grid) {
 		this.setDaemon(true);
 		lcd = LocalEV3.get().getGraphicsLCD();
 		this.grid = grid;
-//		initialiseGridStates();
 	}
 
 	public void run() {
@@ -28,7 +22,7 @@ public class PilotMonitor extends Thread {
 			lcd.setFont(Font.getSmallFont());
 			updateMap();
 
-    		try {
+			try {
 				sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -40,7 +34,7 @@ public class PilotMonitor extends Thread {
 	/**
 	 * Draws the 6 by 7 Occupancy grid used to map the environment.
 	 */
-	public final void updateMap() {
+	private void updateMap() {
 		int rowCounter = 1;
 		lcd.drawString("+---+---+---+---+---+---+---+", 0, 0, 0);
 
@@ -48,10 +42,10 @@ public class PilotMonitor extends Thread {
 			String rowString = "|";
 			
 			for (int x = 0; x < grid.getGridWidth(); x++) {
-				double probability = grid.findUsingCoordinate(x, y).getOccupancyProbability();
+				double probability = grid.getCell(x, y).getOccupancyProbability();
 			
 				// display the robot's current position
-				if (grid.getCurrentCell() == grid.findUsingCoordinate(x, y)) {
+				if (grid.getCurrentCell() == grid.getCell(x, y)) {
 					rowString += " R ";
 					
 				// display if the cell is unknown
@@ -74,29 +68,6 @@ public class PilotMonitor extends Thread {
 			rowCounter += 2;
 		}
 	}
-
-	/**
-	 * Constructs the string to be placed inside this cell of the occupancy grid.
-	 * @param row the row this string is to be placed in.
-	 * @param column the column this string is to be place in.
-	 * @return the constructed string to be placed in the disired cell of the occupancy grid.
-	 */
-//	public final String getColumnString(int row, int column) {
-//	  return this.gridStates[row][column] + "|";
-//	}
-
-	/**
-	 * Set the starting state values of the occupancy grid.
-	 */
-//	public final void initialiseGridStates() {
-//	  for (int y = 0; y < this.gridHeight; y++) {
-//	    for (int x = 0; x < this.gridWidth; x++) {
-//	      this.gridStates[y][x] = " ? ";
-//	    }
-//	  }
-//	  this.gridStates[0][0] = String.format("%.1f", 0.00);
-//	}
-
 
 	public final void terminate() {
 		running = false;

@@ -1,15 +1,12 @@
 package monitors;
-import lejos.hardware.Battery;
 import main.Cell;
 import main.Grid;
 import main.PilotRobot;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
 
 // Used to send data about the robot to a PC client interface.
-//TODO add grid interface for probabilitys and robots position.
 public class PCMonitor extends Thread {
 
 	//Server socket between robot and client
@@ -30,11 +27,12 @@ public class PCMonitor extends Thread {
 		this.client = client;
 		this.robot = robot;
 		this.grid = grid;
+		
 		try {
 			out = new PrintWriter(client.getOutputStream(), true);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			running = false;
 		}
 	}
 
@@ -66,6 +64,8 @@ public class PCMonitor extends Thread {
 				out.println("Motor status: " + "Stationary");
 			}
 			out.println("  type: " + robot.getPilot().getMovement().getMoveType());
+			
+			// output probability data and current cell
 			String probabilityData = "";
 			for (Cell cell : grid.getGrid()) {
 				probabilityData += cell.getOccupancyProbability() + ",";
@@ -73,6 +73,7 @@ public class PCMonitor extends Thread {
 			out.println(probabilityData);
 			out.println(grid.getCurrentCell().getX() + "," + grid.getCurrentCell().getY());
 			out.flush();
+			
 			try {
 				sleep(400);
 			} catch (InterruptedException e) {
@@ -81,5 +82,8 @@ public class PCMonitor extends Thread {
 			}
 		}
 	}
-
+	
+	public final void terminate() {
+		running = false;
+	}
 }

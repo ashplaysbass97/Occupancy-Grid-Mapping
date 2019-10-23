@@ -48,12 +48,12 @@ public class MoveBehavior implements Behavior {
 		
 		// select a destination and build the path
 		if (path.isEmpty()) {
-			destination = grid.areCellsUnknown() ? selectDestination() : grid.findUsingCoordinate(0, 0);
+			destination = grid.areCellsUnknown() ? selectDestination() : grid.getCell(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
 		if (path.get(0).getOccupancyProbability() == 1) {
-			destination = grid.areCellsUnknown() ? selectDestination() : grid.findUsingCoordinate(0, 0);
+			destination = grid.areCellsUnknown() ? selectDestination() : grid.getCell(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
@@ -114,7 +114,7 @@ public class MoveBehavior implements Behavior {
 		
 		// set pose and current cell of grid object
 		opp.setPose(new Pose(x, y, opp.getPose().getHeading()));
-		grid.setCurrentCell(grid.findUsingCoordinate(x, y));
+		grid.setCurrentCell(grid.getCell(x, y));
 		
 		// only scan neighbours if cell hasn't already been visited
 		if (!grid.getCurrentCell().hasBeenVisited()) {
