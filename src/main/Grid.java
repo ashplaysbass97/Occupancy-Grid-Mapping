@@ -12,7 +12,7 @@ public class Grid {
 	public Grid() {
 		createGrid();
 		setNeighbours();
-		setCurrentCell(findUsingCoordinate(0, 0));
+		setCurrentCell(getCell(0, 0));
 	}
 	
 	/**
@@ -33,11 +33,11 @@ public class Grid {
 		for (int y = 0; y < GRID_HEIGHT; y++) {
 			for (int x = 0; x < GRID_WIDTH; x++) {
 				ArrayList<Cell> neighbours = new ArrayList<Cell>();
-				if (x != 0) neighbours.add(findUsingCoordinate(x - 1, y));
-				if (x != GRID_WIDTH - 1) neighbours.add(findUsingCoordinate(x + 1, y));
-				if (y != GRID_HEIGHT - 1) neighbours.add(findUsingCoordinate(x, y + 1));
-				if (y != 0) neighbours.add(findUsingCoordinate(x, y - 1));
-				findUsingCoordinate(x, y).setNeighbours(neighbours);
+				if (x != 0) neighbours.add(getCell(x - 1, y));
+				if (x != GRID_WIDTH - 1) neighbours.add(getCell(x + 1, y));
+				if (y != GRID_HEIGHT - 1) neighbours.add(getCell(x, y + 1));
+				if (y != 0) neighbours.add(getCell(x, y - 1));
+				getCell(x, y).setNeighbours(neighbours);
 			}
 		}
 	}
@@ -48,7 +48,7 @@ public class Grid {
 	 * @param y the y-coordinate of the cell to find
 	 * @return the corresponding cell for the coordinates provided
 	 */
-	public final Cell findUsingCoordinate(int x, int y) {
+	public final Cell getCell(int x, int y) {
 		for (Cell cell : grid) {
 			if (cell.getX() == x && cell.getY() == y) {
 				return cell;
@@ -59,7 +59,7 @@ public class Grid {
 	
 	public final boolean areCellsUnknown() {
 		for (Cell cell : grid) {
-			if (cell.getOccupancyProbability() == -1) {
+			if (cell.getOccupancyProbability() == -1 && !cell.isBlocked()) {
 				return true;
 			}
 		}
@@ -85,9 +85,5 @@ public class Grid {
 	public final void setCurrentCell(Cell currentCell) {
 		this.currentCell = currentCell;
 		currentCell.setOccupancyProbability(0);
-	}
-	
-	public Cell getCell(int x, int y) {
-	  return grid.get((y * 7) + x);
 	}
 }

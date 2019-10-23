@@ -38,7 +38,7 @@ public class Main {
 		// set up the behaviours for the arbitrator and construct it
 		Behavior b1 = new MoveBehavior(myRobot, grid);
 		Behavior b2 = new ScanBehavior(myRobot, myMonitor, grid);
-		Behavior b3 = new ExitBehavior(myRobot, myMonitor, grid, server);
+		Behavior b3 = new ExitBehavior(myRobot, myMonitor, pcMonitor);
 		Behavior [] behaviorArray = {b1, b2, b3};
 		Arbitrator arbitrator = new Arbitrator(behaviorArray);
 		arbitrator.go();

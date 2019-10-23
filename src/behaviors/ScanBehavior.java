@@ -49,39 +49,39 @@ public class ScanBehavior implements Behavior {
 			
 			if (heading > -45 && heading <= 45) {
 				//north
-				left = grid.findUsingCoordinate(current.getX() - 1, current.getY());
-				inFront = grid.findUsingCoordinate(current.getX(), current.getY() + 1);
-				right = grid.findUsingCoordinate(current.getX() + 1, current.getY());
+				left = grid.getCell(current.getX() - 1, current.getY());
+				inFront = grid.getCell(current.getX(), current.getY() + 1);
+				right = grid.getCell(current.getX() + 1, current.getY());
 			} else if (heading > 45 && heading <= 135) {
 				//east
-				left = grid.findUsingCoordinate(current.getX(), current.getY() + 1);
-				inFront = grid.findUsingCoordinate(current.getX() + 1, current.getY());
-				right = grid.findUsingCoordinate(current.getX(), current.getY() - 1);
+				left = grid.getCell(current.getX(), current.getY() + 1);
+				inFront = grid.getCell(current.getX() + 1, current.getY());
+				right = grid.getCell(current.getX(), current.getY() - 1);
 			} else if (heading > -135 && heading <= -45) {
 				//west
-				left = grid.findUsingCoordinate(current.getX(), current.getY() - 1);
-				inFront = grid.findUsingCoordinate(current.getX() - 1, current.getY());
-				right = grid.findUsingCoordinate(current.getX(), current.getY() + 1);
+				left = grid.getCell(current.getX(), current.getY() - 1);
+				inFront = grid.getCell(current.getX() - 1, current.getY());
+				right = grid.getCell(current.getX(), current.getY() + 1);
 			} else {
 				//south
-				left = grid.findUsingCoordinate(current.getX() + 1, current.getY());
-				inFront = grid.findUsingCoordinate(current.getX(), current.getY() - 1);
-				right = grid.findUsingCoordinate(current.getX() - 1, current.getY());
+				left = grid.getCell(current.getX() + 1, current.getY());
+				inFront = grid.getCell(current.getX(), current.getY() - 1);
+				right = grid.getCell(current.getX() - 1, current.getY());
 			}
 			
 			if (left != null) {
-			  ultrasound.sensorRotateLeft();
-			  ultrasound.calculateCellsInSonarCone();
+				ultrasound.sensorRotateLeft();
+				ultrasound.calculateCellsInSonarCone();
 			}
 			
 			if (right != null) {
-			  ultrasound.sensorRotateRight();
-              ultrasound.calculateCellsInSonarCone();
+				ultrasound.sensorRotateRight();
+				ultrasound.calculateCellsInSonarCone();
 			}
 			
 			if (inFront != null) {
-			  ultrasound.sensorRotateCentre();
-              ultrasound.calculateCellsInSonarCone();
+				ultrasound.sensorRotateCentre();
+				ultrasound.calculateCellsInSonarCone();
 			}
 			myRobot.setScanRequired(false);
 		}

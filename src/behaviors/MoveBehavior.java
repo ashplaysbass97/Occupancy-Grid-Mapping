@@ -48,18 +48,22 @@ public class MoveBehavior implements Behavior {
 		
 		// select a destination and build the path
 		if (path.isEmpty()) {
-			destination = grid.areCellsUnknown() ? selectDestination() : grid.findUsingCoordinate(0, 0);
+			destination = grid.areCellsUnknown() ? selectDestination() : grid.getCell(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
 		if (path.get(0).getOccupancyProbability() == 1) {
-			destination = grid.areCellsUnknown() ? selectDestination() : grid.findUsingCoordinate(0, 0);
+			destination = grid.areCellsUnknown() ? selectDestination() : grid.getCell(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
-		// move to the next step
-		Cell nextStep = path.remove(0);
-		followPath(nextStep.getX(), nextStep.getY());
+		if (path != null) {
+			// move to the next step
+			Cell nextStep = path.remove(0);
+			followPath(nextStep.getX(), nextStep.getY());
+		} else {
+			destination.setIsBlocked(true);
+		}
 	}
 	
 	/**
@@ -68,25 +72,24 @@ public class MoveBehavior implements Behavior {
 	 */
 	private Cell selectDestination() {
 		for (Cell cell : grid.getGrid()) {
-			cell.setDistance(grid.getCurrentCell().getX(), grid.getCurrentCell().getY());
+			cell.setValue(grid.getCurrentCell().getX(), grid.getCurrentCell().getY());
 		}
 		
 		ArrayList<Cell> sortableGrid = new ArrayList<>(grid.getGrid());
 		Collections.sort(sortableGrid, new Comparator<Cell>() {
 			@Override
 			public int compare(Cell a, Cell b) {
-				return Double.compare(a.getDistance(), b.getDistance());
+				return Double.compare(a.getValue(), b.getValue());
 			}
 		});
 		
-		Collections.sort(sortableGrid, new Comparator<Cell>() {
-			@Override
-			public int compare(Cell a, Cell b) {
-				return Integer.compare(b.countUnknownNeighbours(), a.countUnknownNeighbours());
+		for (Cell cell : sortableGrid) {
+			if (cell.getOccupancyProbability() != 1 && !cell.isBlocked() && !(cell.getOccupancyProbability() == 0 && cell.countUnknownNeighbours() == 0)) {
+				return cell;
 			}
-		});
+		}
 		
-		return sortableGrid.get(0);
+		return null;
 	}
 	
 	/**
@@ -110,7 +113,7 @@ public class MoveBehavior implements Behavior {
 		
 		// set pose and current cell of grid object
 		opp.setPose(new Pose(x, y, opp.getPose().getHeading()));
-		grid.setCurrentCell(grid.findUsingCoordinate(x, y));
+		grid.setCurrentCell(grid.getCell(x, y));
 		
 		// only scan neighbours if cell hasn't already been visited
 		if (!grid.getCurrentCell().hasBeenVisited()) {

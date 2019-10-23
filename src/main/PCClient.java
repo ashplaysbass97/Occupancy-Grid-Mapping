@@ -76,8 +76,8 @@ public class PCClient extends JFrame {
 		lRobotStats.setText("null");
 		
 		//IP of the robot
-//		String ip = "192.168.70.163"; 
-		 String ip = "192.168.0.35"; 
+		String ip = "192.168.70.163"; 
+		// String ip = "192.168.0.35";
 		
 		if(args.length > 0)
 			ip = args[0];
