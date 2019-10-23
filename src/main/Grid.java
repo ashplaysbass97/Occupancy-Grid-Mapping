@@ -59,7 +59,7 @@ public class Grid {
 	
 	public final boolean areCellsUnknown() {
 		for (Cell cell : grid) {
-			if (cell.getOccupancyProbability() == -1) {
+			if (cell.getOccupancyProbability() == -1 && !cell.isBlocked()) {
 				return true;
 			}
 		}

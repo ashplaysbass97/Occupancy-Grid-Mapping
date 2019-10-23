@@ -62,8 +62,7 @@ public class MoveBehavior implements Behavior {
 			Cell nextStep = path.remove(0);
 			followPath(nextStep.getX(), nextStep.getY());
 		} else {
-			// TODO separate option for blocked cells
-			destination.setOccupancyProbability(1);
+			destination.setIsBlocked(true);
 		}
 	}
 	
@@ -85,7 +84,7 @@ public class MoveBehavior implements Behavior {
 		});
 		
 		for (Cell cell : sortableGrid) {
-			if (cell.getOccupancyProbability() != 1 && !(cell.getOccupancyProbability() == 0 && cell.countUnknownNeighbours() == 0)) {
+			if (cell.getOccupancyProbability() != 1 && !cell.isBlocked() && !(cell.getOccupancyProbability() == 0 && cell.countUnknownNeighbours() == 0)) {
 				return cell;
 			}
 		}

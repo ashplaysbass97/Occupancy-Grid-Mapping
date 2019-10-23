@@ -5,6 +5,7 @@ public class Cell {
 	private int x;
 	private int y;
 	private double value;
+	private boolean isBlocked = false;
 	private boolean hasBeenVisited = false;
 	private double occupancyProbability = -1; // -1: unknown, 0: empty, 1: occupied
 	private ArrayList<Cell> neighbours = new ArrayList<Cell>();
@@ -105,11 +106,19 @@ public class Cell {
 		this.previousCell = previousCell;
 	}
 	
-	public int getNoOfSensorReadings() {
-	  return noOfSensorReadings;
+	public final int getNoOfSensorReadings() {
+		return noOfSensorReadings;
 	}
 	
-	public void addSensorReading( ) {
-	  noOfSensorReadings++;
+	public final void addSensorReading( ) {
+		 noOfSensorReadings++;
+	}
+	
+	public final boolean isBlocked() {
+		return isBlocked;
+	}
+	
+	public final void setIsBlocked(boolean isBlocked) {
+		this.isBlocked = isBlocked;
 	}
 }
