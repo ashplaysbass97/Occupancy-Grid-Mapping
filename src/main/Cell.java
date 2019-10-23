@@ -4,7 +4,7 @@ import java.util.*;
 public class Cell {
 	private int x;
 	private int y;
-	private double distance;
+	private double value;
 	private boolean hasBeenVisited = false;
 	private double occupancyProbability = -1; // -1: unknown, 0: empty, 1: occupied
 	private ArrayList<Cell> neighbours = new ArrayList<Cell>();
@@ -13,6 +13,7 @@ public class Cell {
 	private int g = 0; // cost of the path from the start node to the destination
 	private int h = 0; // heuristic that estimates the cost of the cheapest path from the start node to the destination
 	private Cell previousCell;
+	private int noOfSensorReadings = 0;
 	
 	public Cell (int x, int y) {
 		this.x = x;
@@ -28,7 +29,7 @@ public class Cell {
 	}
 	
 	public final String toString() {
-		return "(" + x + ", " + y + ")";
+		return x + "," + y;
 	}
 	
 	public final int getX() {
@@ -39,8 +40,8 @@ public class Cell {
 		return y;
 	}
 	
-	public final double getDistance() {
-		return distance;
+	public final double getValue() {
+		return value;
 	}
 	
 	public final boolean hasBeenVisited() {
@@ -71,8 +72,9 @@ public class Cell {
 		return previousCell;
 	}
 	
-	public final void setDistance(int x, int y) {
-		distance = Math.sqrt((y - this.y) * (y - this.y) + (x - this.x) * (x - this.x));
+	public final void setValue(int x, int y) {
+		double distance = Math.sqrt((y - this.y) * (y - this.y) + (x - this.x) * (x - this.x));
+		value = 4 - countUnknownNeighbours() + distance;
 	}
 	
 	public final void visit() {
@@ -101,5 +103,13 @@ public class Cell {
 	
 	public final void setPreviousCell(Cell previousCell) {
 		this.previousCell = previousCell;
+	}
+	
+	public int getNoOfSensorReadings() {
+	  return noOfSensorReadings;
+	}
+	
+	public void addSensorReading( ) {
+	  noOfSensorReadings++;
 	}
 }

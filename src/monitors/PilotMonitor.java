@@ -13,6 +13,7 @@ public class PilotMonitor extends Thread {
 	private volatile boolean running = true;
 	private GraphicsLCD lcd;
 	private Grid grid;
+	private int cellCounter;
 
 	public PilotMonitor(Grid grid) {
 		this.setDaemon(true);
@@ -63,9 +64,7 @@ public class PilotMonitor extends Thread {
 					
 				// display occupancy probability to 1 significant digit
 				} else {
-					BigDecimal bd = new BigDecimal(probability);
-					bd = bd.round(new MathContext(3));
-					rowString += bd.doubleValue();
+					rowString += Math.round(probability * 10) / 10.0;
 				}
 				rowString += "|";
 			}

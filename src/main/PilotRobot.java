@@ -36,9 +36,9 @@ public class PilotRobot {
 	// SmartRobot constructor
 	public PilotRobot() {
 		ev3 = BrickFinder.getDefault();
-		setupGyroSensor();
-		setupTouchSensor();
-		setupUltrasonicSensor();
+//		setupGyroSensor();
+//		setupTouchSensor();
+//		setupUltrasonicSensor();
 		setupPilot();
 		setupOdometryPoseProvider();
 	}
@@ -72,6 +72,10 @@ public class PilotRobot {
 		ultrasonicSampleProvider = ultrasonicSensor.getDistanceMode();
 		ultrasonicSample = new float[ultrasonicSampleProvider.sampleSize()];
 		// ultrasonicSensorMotor = new NXTRegulatedMotor(ev3.getPort("C"));
+	}
+	
+	public EV3UltrasonicSensor getUltrasonicSensor() {
+	  return ultrasonicSensor;
 	}
 
 	/**
