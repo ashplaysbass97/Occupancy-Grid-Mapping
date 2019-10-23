@@ -71,17 +71,17 @@ public class ScanBehavior implements Behavior {
 			
 			if (left != null) {
 				ultrasound.sensorRotateLeft();
-				ultrasound.calculateCellsInSonarCone();
+				ultrasound.calculateCellsInSonarCone(heading-90);
 			}
 			
 			if (right != null) {
 				ultrasound.sensorRotateRight();
-				ultrasound.calculateCellsInSonarCone();
+				ultrasound.calculateCellsInSonarCone(heading+90);
 			}
 			
 			if (inFront != null) {
 				ultrasound.sensorRotateCentre();
-				ultrasound.calculateCellsInSonarCone();
+				ultrasound.calculateCellsInSonarCone(heading);
 			}
 			myRobot.setScanRequired(false);
 		}

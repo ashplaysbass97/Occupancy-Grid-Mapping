@@ -47,21 +47,21 @@ public class Sensor {
 		currentPosition = (int) (robot.getAngle());
 	}
 	
-	public  String getSensorHeading() {
-	  if (currentPosition > -10 || currentPosition < 10) { //check if sensor has a north heading within error of 10 degrees
-  
-        return "North";       
-      } else if ((currentPosition > 80 && currentPosition < 100)) { //check for east heading
-
-        return "East";
-      } else if ((currentPosition > 170 || currentPosition < -170)) { //check for south heading
-        
-        return "South";
-      } else { //assume west heading
-
-        return "West";
-      }
-    }
+//	public  String getSensorHeading() {
+//	  if (currentPosition > -10 || currentPosition < 10) { //check if sensor has a north heading within error of 10 degrees
+//  
+//        return "North";       
+//      } else if ((currentPosition > 80 && currentPosition < 100)) { //check for east heading
+//
+//        return "East";
+//      } else if ((currentPosition > 170 || currentPosition < -170)) { //check for south heading
+//        
+//        return "South";
+//      } else { //assume west heading
+//
+//        return "West";
+//      }
+//    }
 	
 	public static double tan(int opposite, int adjacent) {
 	  return Math.tan(((opposite * 0.25) - 0.125) / ((adjacent * 0.25) - 0.125)) * (180 / Math.PI);
@@ -99,7 +99,7 @@ public class Sensor {
       cell.setOccupancyProbability(1 - probabilityEmpty);
 	}
 	
-	  public void calculateCellsInSonarCone() {
+	  public void calculateCellsInSonarCone(double sensorHeading) {
 	    //Make sure sensor reading is above the min range.
 	    double sensorReading = sensorDistance();
 	    if (!(sensorReading == 0)) {
@@ -108,13 +108,13 @@ public class Sensor {
 	        sensorReading = 2.5;
 	      }
 
-	      String heading = getSensorHeading(); //Direction sensor is pointing
+//	      String heading = getSensorHeading(); //Direction sensor is pointing
 	      
 	      //a cell that is within the sonar cone.
 	      //WARNING GROSS CODE.
 	      /*For each heading type figure out what cells have a chance of being within the utrasound sensor cone a angle of 40 degrees is assumed.*/
 	      Cell withinCone;
-	      if (heading == "North") {
+	      if (sensorHeading > -45 && sensorHeading <= 45 ) {
 	        
 	        //take the sensor reading and convert it to number of grid cells
 	        /*Since we are face north we want to decrease the Y coordinate to go through every cell that lies within the sensor reading. */
@@ -124,7 +124,7 @@ public class Sensor {
 	          if (i >= ((int)((sensorReading+0.125)/0.25)-0.01) && i <= ((int)((sensorReading+0.125)/0.25)+0.01)) {
 	            
 	            //Check if cell is exists on the grid this prevents nullException errors when the wall is detected.
-	            withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()-i);
+	            withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()+i);
 	            if ( withinCone != null ) {
 	              calculateRegion1Probability(withinCone,sensorReading,0);
 	            }
@@ -134,12 +134,12 @@ public class Sensor {
 	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
 	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
 	              //Check if right cell exists on the grid
-	              withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()-i);
+	              withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()+i);
 	              if (withinCone != null) {
 	                calculateRegion1Probability(withinCone,sensorReading,tan(j,i));
 	              }
 	              //Check if left cell exists on the grid
-	              withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()-i);
+	              withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()+i);
 	              if (withinCone != null) {
 	                calculateRegion1Probability(withinCone,sensorReading,tan(j,i));
 	              }
@@ -149,7 +149,7 @@ public class Sensor {
 	          } else {
 	            
 	            //check if cell is within grid.
-	            withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()-i);
+	            withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()+i);
 	            if (withinCone != null) {
 	              calculateRegion2Probability(withinCone,(i*0.25)-0.125,0);
 	            }
@@ -159,13 +159,13 @@ public class Sensor {
 	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
 	              
 	              //check if right cell is within grid
-	              withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()-i);
+	              withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()+i);
 	              if (withinCone != null) {
 	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
 	              }
 	              
 	              //check if left cell is within grid
-	              withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()-i);
+	              withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()+i);
 	              if (withinCone != null) {
 	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
 	              }
@@ -173,7 +173,7 @@ public class Sensor {
 	          }
 	        }
 	        //Now repeat the above code with slight changes for the headings.
-	       } else if (heading == "East") {
+	       } else if (sensorHeading > 45 && sensorHeading <= 135) {
 	       //take the sensor reading and convert to number of grid cells
 	        for (int i = 1; i <= ((int)((sensorReading+0.125)/0.25)); i++) {
 	          
@@ -220,55 +220,7 @@ public class Sensor {
 	            }
 	          }
 	        }
-	      } else if (heading == "South") {
-	        for (int i = 1; i <= ((int)((sensorReading+0.125)/0.25)); i++) {
-	          
-	          //check if in +- 1cm boundray at sonar detection arc. if so calculate proability assuming its in region 1
-	          if (i >= ((int)((sensorReading+0.125)/0.25)-0.01) && i <= ((int)((sensorReading+0.125)/0.25)+0.01)) {
-	            
-	            withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()+i);
-	            if (withinCone != null ) {
-	              calculateRegion1Probability(withinCone,sensorReading,0);
-	            }
-	            
-	            //check if neighbour cells are within the fieldOfView.
-	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
-	              
-	              withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()+i);
-	              if (withinCone != null) {
-	                calculateRegion1Probability(withinCone,sensorReading,tan(j,i));
-	              }
-	              
-	              withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()+i);
-	              if (withinCone != null) {
-	                calculateRegion1Probability(withinCone,sensorReading,tan(j,i));
-	              }
-	            }
-	            //Otherwise calcuate occupation probability assuming its in region 2.
-	          } else {
-	            withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()+i);
-	            if (withinCone != null) {
-	              calculateRegion2Probability(withinCone,(i*0.25)-0.125,0);
-	            }
-	           
-	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
-	              
-	              withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()+i);
-	              if (withinCone != null) {
-	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
-	              }
-	              
-	              withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()+i);
-	              if ( withinCone != null) {
-	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
-	              }
-	            }
-	          }
-	        }
-	      //else assume heading is west.
-	      } else {
+	      } else if (sensorHeading > -135 && sensorHeading <= -45){
 	        
 	        for (int i = 1; i < ((int)((sensorReading+0.125)/0.25)); i++) {
 	          //check if in +- 1cm boundray at sonar detection arc. if so calculate proability assuming its in region 1
@@ -316,6 +268,53 @@ public class Sensor {
 	            }
 	          }
 	        }
+	      } else {
+	          for (int i = 1; i <= ((int)((sensorReading+0.125)/0.25)); i++) {
+              
+              //check if in +- 1cm boundray at sonar detection arc. if so calculate proability assuming its in region 1
+              if (i >= ((int)((sensorReading+0.125)/0.25)-0.01) && i <= ((int)((sensorReading+0.125)/0.25)+0.01)) {
+                
+                withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()-i);
+                if (withinCone != null ) {
+                  calculateRegion1Probability(withinCone,sensorReading,0);
+                }
+                
+                //check if neighbour cells are within the fieldOfView.
+                double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
+                for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+                  
+                  withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()-i);
+                  if (withinCone != null) {
+                    calculateRegion1Probability(withinCone,sensorReading,tan(j,i));
+                  }
+                  
+                  withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()-i);
+                  if (withinCone != null) {
+                    calculateRegion1Probability(withinCone,sensorReading,tan(j,i));
+                  }
+                }
+                //Otherwise calcuate occupation probability assuming its in region 2.
+              } else {
+                withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()-i);
+                if (withinCone != null) {
+                  calculateRegion2Probability(withinCone,(i*0.25)-0.125,0);
+                }
+               
+                double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
+                for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+                  
+                  withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()-i);
+                  if (withinCone != null) {
+                    calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+                  }
+                  
+                  withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()-i);
+                  if ( withinCone != null) {
+                    calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+                  }
+                }
+              }
+            }
 	      }
 	  } 
 	 }
