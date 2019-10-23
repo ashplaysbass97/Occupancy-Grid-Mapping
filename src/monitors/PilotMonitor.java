@@ -35,6 +35,11 @@ public class PilotMonitor extends Thread {
 	 * Draws the 6 by 7 Occupancy grid used to map the environment.
 	 */
 	private void updateMap() {
+		//this is the only way i could stop the lcd screen overlaping text might revisit
+		for (int i = 0; i < 9; i++) {
+			System.out.println("");
+			System.out.flush();
+		}
 		int rowCounter = 1;
 		lcd.drawString("+---+---+---+---+---+---+---+", 0, 0, 0);
 
@@ -53,7 +58,7 @@ public class PilotMonitor extends Thread {
 					rowString += " ? ";
 					
 				// display if the cell is occupied
-				} else if (probability == 1) {
+				} else if (probability > 0.99) {
 					rowString += "|||";
 					
 				// display occupancy probability to 1 significant digit

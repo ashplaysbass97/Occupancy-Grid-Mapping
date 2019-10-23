@@ -39,11 +39,7 @@ public class PCMonitor extends Thread {
 	//run the thread
 	public void run() {
 		while (running) {
-			//this is the only way i could stop the lcd screen overlaping text might revisit
-			for (int i = 0; i < 9; i++) {
-				System.out.println("");
-				System.out.flush();
-			}
+
 
 			/*output data for
 			 * Battery,

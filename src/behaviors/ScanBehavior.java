@@ -2,6 +2,7 @@ package behaviors;
 
 import java.util.ArrayList;
 
+import lejos.hardware.Button;
 import lejos.robotics.localization.OdometryPoseProvider;
 import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.subsumption.Behavior;
@@ -84,6 +85,10 @@ public class ScanBehavior implements Behavior {
 				ultrasound.calculateCellsInSonarCone(heading);
 			}
 			myRobot.setScanRequired(false);
+			
+//			while (!Button.ENTER.isDown()) {
+//				
+//			}
 		}
 	}
 }

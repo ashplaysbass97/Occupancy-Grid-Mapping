@@ -1,19 +1,17 @@
 package main;
-import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
-import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.port.Port;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
+import lejos.hardware.motor.Motor;
 
 public class Sensor {
 	
 	PilotRobot robot; 
-	EV3MediumRegulatedMotor sensorMotor = new EV3MediumRegulatedMotor(BrickFinder.getDefault().getPort("C"));
 	int distance;
 	private final int coneAngle = 40;
 	private int currentPosition;
 	private Grid grid;
+	private final  double cellSize = 25;
+	private final double cellCenterDistance = cellSize/2;
 	
 	public Sensor(PilotRobot r, Grid g) {
 	  this.robot = r;
@@ -35,15 +33,15 @@ public class Sensor {
 	}
 	
 	public void sensorRotateLeft() {
-		sensorMotor.rotateTo(90);
+		Motor.C.rotateTo(95);
 		currentPosition = (int) (robot.getAngle() + 90);
 	}
 	public void sensorRotateRight() {
-		sensorMotor.rotateTo(-90);
+		Motor.C.rotateTo(-95);
 		currentPosition = (int) (robot.getAngle() - 90);
 	}
 	public void sensorRotateCentre() {
-		sensorMotor.rotateTo(0);
+		Motor.C.rotateTo(0);
 		currentPosition = (int) (robot.getAngle());
 	}
 	
@@ -63,8 +61,8 @@ public class Sensor {
 //      }
 //    }
 	
-	public static double tan(int opposite, int adjacent) {
-	  return Math.tan(((opposite * 0.25) - 0.125) / ((adjacent * 0.25) - 0.125)) * (180 / Math.PI);
+	public double tan(int opposite, int adjacent) {
+	  return Math.tan(((opposite * cellSize) - cellCenterDistance) / ((adjacent * cellSize) - cellCenterDistance)) * (180 / Math.PI);
 	}
 	
 	public void calculateRegion1Probability(Cell cell, Double r, double a) {
@@ -72,7 +70,7 @@ public class Sensor {
 	  if (cell.getOccupancyProbability() == -1) {
 	    cell.setOccupancyProbability(0.5);
 	  }
-	  double probabilityRGivenOccupied = ((((2.5 - r)/2.5) + ((20 - a) / 20))/2) * 0.98;
+	  double probabilityRGivenOccupied = ((((250 - r)/250) + ((20 - a) / 20))/2) * 0.98;
 	  double probabilityRGivenEmpty = 1 - probabilityRGivenOccupied;
 	  
 	  
@@ -88,7 +86,7 @@ public class Sensor {
       if (cell.getOccupancyProbability() == -1) {
         cell.setOccupancyProbability(0.5);
       }
-      double probabilityRGivenEmpty= ((((2.5 - r)/2.5) + ((20 - a) / 20))/2) * 0.98;
+      double probabilityRGivenEmpty= ((((250 - r)/250) + ((20 - a) / 20))/2) * 0.98;
       double probabilityRGivenOccupied = 1 - probabilityRGivenEmpty;
       
       
@@ -102,10 +100,11 @@ public class Sensor {
 	  public void calculateCellsInSonarCone(double sensorHeading) {
 	    //Make sure sensor reading is above the min range.
 	    double sensorReading = sensorDistance();
+	    int cellsInReading = (int)((sensorReading/*-cellCenterDistance*/)/cellSize) +1;
 	    if (!(sensorReading == 0)) {
 	      //If sensor reading is infinity assume it is at max range the areana is at most 1.5m * 1.75m so this should never be the case.
 	      if (sensorReading == Double.POSITIVE_INFINITY) {
-	        sensorReading = 2.5;
+	        sensorReading = 250;
 	      }
 
 //	      String heading = getSensorHeading(); //Direction sensor is pointing
@@ -118,10 +117,10 @@ public class Sensor {
 	        
 	        //take the sensor reading and convert it to number of grid cells
 	        /*Since we are face north we want to decrease the Y coordinate to go through every cell that lies within the sensor reading. */
-	        for (int i = 1; i <= ((int)((sensorReading+0.125)/0.25)); i++) {
+	        for (int i = 0; i <= (cellsInReading); i++) {
 	          
 	          //check if cell is in +- 1cm boundray at sonar detection arc. if so calculate proability assuming its in region 1
-	          if (i >= ((int)((sensorReading+0.125)/0.25)-0.01) && i <= ((int)((sensorReading+0.125)/0.25)+0.01)) {
+	          if (i == cellsInReading)/*((int)((sensorReading-cellCenterDistance)/cellSize)-0.01) && i <= ((int)((sensorReading+cellCenterDistance)/cellSize)+0.01))*/ {
 	            
 	            //Check if cell is exists on the grid this prevents nullException errors when the wall is detected.
 	            withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()+i);
@@ -130,9 +129,9 @@ public class Sensor {
 	            }
 	            
 	            // for every cell within the sensor reading check if neighbour cells (left or right) are within the fieldOfView.
-	            // Converts i to a distance value since 0.25m is lenght of a cell and 0.125m is distance to cell centroid.
-	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+	            // Converts i to a distance value since cellSizem is lenght of a cell and cellCenterDistancem is distance to cell centroid.
+	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*cellSize)/*-cellCenterDistance*/);
+	            for (int j = 1; j <= (int)((fieldOfView/*+cellCenterDistance*/)/cellSize); j ++) {
 	              //Check if right cell exists on the grid
 	              withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()+i);
 	              if (withinCone != null) {
@@ -151,23 +150,23 @@ public class Sensor {
 	            //check if cell is within grid.
 	            withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()+i);
 	            if (withinCone != null) {
-	              calculateRegion2Probability(withinCone,(i*0.25)-0.125,0);
+	              calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,0);
 	            }
 	            
 	            //same as before check if neighbour cells are within the field of view.
-	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*cellSize)/*-cellCenterDistance*/);
+	            for (int j = 1; j <= (int)((fieldOfView/*+cellCenterDistance*/)/cellSize); j ++) {
 	              
 	              //check if right cell is within grid
 	              withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()+i);
 	              if (withinCone != null) {
-	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+	                calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,tan(j,i));
 	              }
 	              
 	              //check if left cell is within grid
 	              withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()+i);
 	              if (withinCone != null) {
-	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+	                calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,tan(j,i));
 	              }
 	            }
 	          }
@@ -175,18 +174,18 @@ public class Sensor {
 	        //Now repeat the above code with slight changes for the headings.
 	       } else if (sensorHeading > 45 && sensorHeading <= 135) {
 	       //take the sensor reading and convert to number of grid cells
-	        for (int i = 1; i <= ((int)((sensorReading+0.125)/0.25)); i++) {
+	        for (int i = 0; i <= cellsInReading; i++) {
 	          
 	          //check if in +- 1cm boundray at sonar detection arc. if so calculate proability assuming its in region 1
-	          if (i >= ((int)((sensorReading+0.125)/0.25)-0.01) && i <= ((int)((sensorReading+0.125)/0.25)+0.01)) {
+	          if (i == cellsInReading)/*((int)((sensorReading+cellCenterDistance)/cellSize)-0.01) && i <= ((int)((sensorReading+cellCenterDistance)/cellSize)+0.01))*/ {
 	            withinCone = grid.getCell(grid.getCurrentCell().getX()+i, grid.getCurrentCell().getY());
 	            if (withinCone != null) {
 	              calculateRegion1Probability(withinCone,sensorReading,0);
 	            }
 	            
 	            //check if neighbour cells are within the fieldOfView.
-	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*cellSize)/*-cellCenterDistance*/);
+	            for (int j = 1; j <= (int)((fieldOfView/*+cellCenterDistance*/)/cellSize); j ++) {
 	              
 	              withinCone = grid.getCell(grid.getCurrentCell().getX()+i, grid.getCurrentCell().getY()+j);
 	              if (withinCone != null) {
@@ -203,28 +202,28 @@ public class Sensor {
 	            
 	            withinCone = grid.getCell(grid.getCurrentCell().getX()+i, grid.getCurrentCell().getY());
 	            if (withinCone != null) {
-	              calculateRegion2Probability(withinCone,(i*0.25)-0.125,0);
+	              calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,0);
 	            }
-	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*cellSize)/*-cellCenterDistance*/);
+	            for (int j = 1; j <= (int)((fieldOfView/*+cellCenterDistance*/)/cellSize); j ++) {
 	              
 	              withinCone = grid.getCell(grid.getCurrentCell().getX()+i, grid.getCurrentCell().getY()+j);
 	              if (withinCone != null) {
-	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+	                calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,tan(j,i));
 	              }
 	              
 	              withinCone = grid.getCell(grid.getCurrentCell().getX()+i, grid.getCurrentCell().getY()-j);
 	              if (withinCone != null) {
-	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+	                calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,tan(j,i));
 	              }
 	            }
 	          }
 	        }
 	      } else if (sensorHeading > -135 && sensorHeading <= -45){
 	        
-	        for (int i = 1; i < ((int)((sensorReading+0.125)/0.25)); i++) {
+	        for (int i = 0; i < cellsInReading; i++) {
 	          //check if in +- 1cm boundray at sonar detection arc. if so calculate proability assuming its in region 1
-	          if (i >= ((int)((sensorReading+0.125)/0.25)-0.01) && i <= ((int)((sensorReading+0.125)/0.25)+0.01)) {
+	          if (i == cellsInReading)/*(i >= ((int)((sensorReading+cellCenterDistance)/cellSize)-0.01) && i <= ((int)((sensorReading+cellCenterDistance)/cellSize)+0.01))*/ {
 	            
 	            withinCone = grid.getCell(grid.getCurrentCell().getX()-i, grid.getCurrentCell().getY());
 	            if (withinCone != null) {
@@ -232,8 +231,8 @@ public class Sensor {
 	            }
 	            
 	            //check if neighbour cells are within the fieldOfView.
-	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*cellSize)/*-cellCenterDistance*/);
+	            for (int j = 1; j <= (int)((fieldOfView/*+cellCenterDistance*/)/cellSize); j ++) {
 	              
 	              withinCone = grid.getCell(grid.getCurrentCell().getX()-i, grid.getCurrentCell().getY()-j);
 	              if (withinCone != null) {
@@ -250,29 +249,29 @@ public class Sensor {
 	            
 	            withinCone = grid.getCell(grid.getCurrentCell().getX()-i, grid.getCurrentCell().getY());
 	            if (withinCone != null) {
-	              calculateRegion2Probability(withinCone,(i*0.25)-0.125,0);
+	              calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,0);
 	            }
 	            
-	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-	            for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+	            double fieldOfView = Math.atan(20*Math.PI/180)*((i*cellSize)/*-cellCenterDistance*/);
+	            for (int j = 1; j <= (int)((fieldOfView/*+cellCenterDistance*/)/cellSize); j ++) {
 	              
 	              withinCone = grid.getCell(grid.getCurrentCell().getX()-i, grid.getCurrentCell().getY()-j);
 	              if (withinCone != null) {
-	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+	                calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,tan(j,i));
 	              }
 	              
 	              withinCone = grid.getCell(grid.getCurrentCell().getX()-i, grid.getCurrentCell().getY()+j);
 	              if (withinCone != null) {
-	                calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+	                calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,tan(j,i));
 	              }
 	            }
 	          }
 	        }
 	      } else {
-	          for (int i = 1; i <= ((int)((sensorReading+0.125)/0.25)); i++) {
+	          for (int i = 0; i <= cellsInReading; i++) {
               
               //check if in +- 1cm boundray at sonar detection arc. if so calculate proability assuming its in region 1
-              if (i >= ((int)((sensorReading+0.125)/0.25)-0.01) && i <= ((int)((sensorReading+0.125)/0.25)+0.01)) {
+              if (i == cellsInReading)/*(i >= ((int)((sensorReading+cellCenterDistance)/cellSize)-0.01) && i <= ((int)((sensorReading+cellCenterDistance)/cellSize)+0.01))*/ {
                 
                 withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()-i);
                 if (withinCone != null ) {
@@ -280,8 +279,8 @@ public class Sensor {
                 }
                 
                 //check if neighbour cells are within the fieldOfView.
-                double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-                for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+                double fieldOfView = Math.atan(20*Math.PI/180)*((i*cellSize)/*-cellCenterDistance*/);
+                for (int j = 1; j <= (int)((fieldOfView/*+cellCenterDistance*/)/cellSize); j ++) {
                   
                   withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()-i);
                   if (withinCone != null) {
@@ -297,20 +296,20 @@ public class Sensor {
               } else {
                 withinCone = grid.getCell(grid.getCurrentCell().getX(), grid.getCurrentCell().getY()-i);
                 if (withinCone != null) {
-                  calculateRegion2Probability(withinCone,(i*0.25)-0.125,0);
+                  calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,0);
                 }
                
-                double fieldOfView = Math.atan(20*Math.PI/180)*((i*0.25)-0.125);
-                for (int j = 1; j <= (int)((fieldOfView+0.125)/0.25); j ++) {
+                double fieldOfView = Math.atan(20*Math.PI/180)*((i*cellSize)/*-cellCenterDistance*/);
+                for (int j = 1; j <= (int)((fieldOfView/*+cellCenterDistance*/)/cellSize); j ++) {
                   
                   withinCone = grid.getCell(grid.getCurrentCell().getX()-j, grid.getCurrentCell().getY()-i);
                   if (withinCone != null) {
-                    calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+                    calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,tan(j,i));
                   }
                   
                   withinCone = grid.getCell(grid.getCurrentCell().getX()+j, grid.getCurrentCell().getY()-i);
                   if ( withinCone != null) {
-                    calculateRegion2Probability(withinCone,(i*0.25)-0.125,tan(j,i));
+                    calculateRegion2Probability(withinCone,(i*cellSize)/*-cellCenterDistance*/,tan(j,i));
                   }
                 }
               }

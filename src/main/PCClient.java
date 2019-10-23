@@ -48,7 +48,7 @@ public class PCClient extends JFrame {
 		JPanel occupancyGrid = new JPanel(new GridLayout(6,7));
 		JPanel[][] gridPanels = new JPanel[6][7];
 		int count = 0;
-		for (int i = 0; i < 6; i++) {
+		for (int i = 5; i >= 0; i--) {
 			for (int j = 0; j < 7; j++) {
 				gridPanels[i][j] = new JPanel(new GridLayout(2,1));
 				lOccupancyProbabilities[count] = new JLabel("?");
@@ -119,7 +119,8 @@ public class PCClient extends JFrame {
 			System.out.println("currentCord: " + currentCord);
 			int x = Integer.parseInt(currentCord.split(",")[0]);
 			int y = Integer.parseInt(currentCord.split(",")[1]);
-			for (int i = 0; i < gridProbabilities.length; i++) {
+
+			for (int i = gridProbabilities.length - 1; i >= 0; i--) {
 			    System.out.println(gridProbabilities[i]);
 			    if (gridProbabilities[i] == "-1") {
 			      lOccupancyProbabilities[i].setText("?");

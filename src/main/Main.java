@@ -29,7 +29,7 @@ public class Main {
 			pcMonitor = new PCMonitor(client, myRobot, grid);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} 
 
 		// start the monitors
 		myMonitor.start();
@@ -38,7 +38,8 @@ public class Main {
 		// set up the behaviours for the arbitrator and construct it
 		Behavior b1 = new MoveBehavior(myRobot, grid);
 		Behavior b2 = new ScanBehavior(myRobot, myMonitor, grid);
-		Behavior b3 = new ExitBehavior(myRobot, myMonitor, pcMonitor);
+		// Behavior b3 = new ExitBehavior(myRobot, myMonitor, pcMonitor);
+		Behavior b3 = new ExitBehavior(myRobot, myMonitor);
 		Behavior [] behaviorArray = {b1, b2, b3};
 		Arbitrator arbitrator = new Arbitrator(behaviorArray);
 		arbitrator.go();
