@@ -3,6 +3,7 @@ import lejos.hardware.Battery;
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.motor.Motor;
+import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -23,19 +24,33 @@ public class PilotRobot {
 	private Brick ev3;
 	private EV3UltrasonicSensor ultrasonicSensor;
 	private EV3GyroSensor gyroSensor;
-	private SampleProvider ultrasonicSampleProvider, gyroSampleProvider;
-	private float[] ultrasonicSample, gyroSample;
+	private EV3ColorSensor leftColorSensor, rightColorSensor;
+	private SampleProvider ultrasonicSampleProvider, gyroSampleProvider, leftColorSampleProvider, rightColorSampleProvider;
+	private float[] ultrasonicSample, gyroSample, leftColorSample, rightColorSample;
 	private MovePilot pilot;
 	private OdometryPoseProvider opp;
 	private boolean scanRequired = true;
-
+	
 	// SmartRobot constructor
 	public PilotRobot() {
 		ev3 = BrickFinder.getDefault();
+		setupColorSensors();
 		setupGyroSensor();
 		setupUltrasonicSensor();
 		setupPilot();
 		setupOdometryPoseProvider();
+	}
+	
+	/**
+	 * Set up the color sensors.
+	 */
+	private void setupColorSensors() {
+		leftColorSensor = new EV3ColorSensor(ev3.getPort("S1"));
+		leftColorSampleProvider = leftColorSensor.getRGBMode();
+		leftColorSample = new float[leftColorSampleProvider.sampleSize()];
+		rightColorSensor = new EV3ColorSensor(ev3.getPort("S4"));
+		rightColorSampleProvider = rightColorSensor.getRGBMode();
+		rightColorSample = new float[rightColorSampleProvider.sampleSize()];
 	}
 	
 	/**
@@ -98,6 +113,18 @@ public class PilotRobot {
 	public final float getAngle() {
 		gyroSampleProvider.fetchSample(gyroSample, 0);
 		return gyroSample[0];
+	}
+	
+	// get the left color sample
+	public final float[] getLeftColor() {
+		leftColorSampleProvider.fetchSample(leftColorSample, 0);
+		return leftColorSample;
+	}
+	
+	// get the left color sample
+	public final float[] getRightColor() {
+		rightColorSampleProvider.fetchSample(rightColorSample, 0);
+		return rightColorSample;
 	}
 
 	// get the pilot object from the robot
