@@ -20,8 +20,9 @@ public class ScanBehavior implements Behavior {
 	private PilotMonitor myMonitor;
 	private OdometryPoseProvider opp;
 	private Sensor ultrasound;
+	private boolean useSensorModel;
 	
-	public ScanBehavior(PilotRobot myRobot, PilotMonitor myMonitor, Grid grid) {
+	public ScanBehavior(PilotRobot myRobot, PilotMonitor myMonitor, Grid grid, boolean useSensorModel) {
 		this.myRobot = myRobot;
 		this.myMonitor = myMonitor;
 		this.grid = grid;
@@ -29,6 +30,8 @@ public class ScanBehavior implements Behavior {
 		
 		myPilot = myRobot.getPilot();
 		opp = myRobot.getOdometryPoseProvider();
+		
+		this.useSensorModel = useSensorModel;
 	}
 	
 	public final void suppress() {
@@ -72,23 +75,44 @@ public class ScanBehavior implements Behavior {
 			
 			if (left != null) {
 				ultrasound.sensorRotateLeft();
-				ultrasound.calculateCellsInSonarCone(heading-90);
+				if (useSensorModel) {
+					ultrasound.calculateCellsInSonarCone(heading - 90);
+				} else {
+					if (myRobot.getDistance() < 25) {
+						left.setOccupancyProbability(1);
+					} else {
+						left.setOccupancyProbability(0);
+					}
+				}
 			}
 			
 			if (right != null) {
 				ultrasound.sensorRotateRight();
-				ultrasound.calculateCellsInSonarCone(heading+90);
+				if (useSensorModel) {
+					ultrasound.calculateCellsInSonarCone(heading + 90);
+				} else {
+					if (myRobot.getDistance() < 25) {
+						right.setOccupancyProbability(1);
+					} else {
+						right.setOccupancyProbability(0);
+					}
+				}
 			}
 			
+			ultrasound.sensorRotateCentre(); // always return sensor to face in front
 			if (inFront != null) {
-				ultrasound.sensorRotateCentre();
-				ultrasound.calculateCellsInSonarCone(heading);
+				if (useSensorModel) {
+					ultrasound.calculateCellsInSonarCone(heading);
+				} else {
+					if (myRobot.getDistance() < 25) {
+						inFront.setOccupancyProbability(1);
+					} else {
+						inFront.setOccupancyProbability(0);
+					}
+				}
 			}
-			myRobot.setScanRequired(false);
 			
-//			while (!Button.ENTER.isDown()) {
-//				
-//			}
+			myRobot.setScanRequired(false);
 		}
 	}
 }

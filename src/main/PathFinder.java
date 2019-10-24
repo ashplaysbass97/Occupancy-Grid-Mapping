@@ -4,9 +4,11 @@ import java.util.Collections;
 
 public class PathFinder {
 	private ArrayList<Cell> grid;
+	private double occupiedCellProbability;
 	
-	public PathFinder(ArrayList<Cell> grid) {
+	public PathFinder(ArrayList<Cell> grid, double occupiedCellProbability) {
 		this.grid = grid;
+		this.occupiedCellProbability = occupiedCellProbability;
 	}
 	
 	public ArrayList<Cell> findPath(Cell startCell, Cell destinationCell) {
@@ -19,7 +21,7 @@ public class PathFinder {
 		
 		for (Cell cell : grid) {
 			// add occupied cells to closedCells
-			if (cell.getOccupancyProbability() == 1) {
+			if (cell.getOccupancyProbability() >= occupiedCellProbability) {
 				closedCells.add(cell);
 			}
 			cell.setPreviousCell(null); // remove all previous cells

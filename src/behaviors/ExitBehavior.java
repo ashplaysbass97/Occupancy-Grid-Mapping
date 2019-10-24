@@ -11,6 +11,13 @@ public class ExitBehavior implements Behavior{
 	private boolean suppressed = false;
 	private PilotRobot myRobot;
 	private PilotMonitor pilotMonitor;
+	private PCMonitor pcMonitor = null;
+	
+	public ExitBehavior(PilotRobot robot, PilotMonitor pilotMonitor, PCMonitor pcMonitor) {
+		this.myRobot = robot;
+		this.pilotMonitor = pilotMonitor;
+		this.pcMonitor = pcMonitor;
+	}
 	
 	public ExitBehavior(PilotRobot robot, PilotMonitor pilotMonitor) {
 		this.myRobot = robot;
@@ -32,7 +39,9 @@ public class ExitBehavior implements Behavior{
 		while (Button.ESCAPE.isDown() && !suppressed) {
 			pilotMonitor.terminate();
 			myRobot.closeRobot();
-			
+			if (pcMonitor != null) {
+				pcMonitor.terminate();
+			}
 			System.exit(0);
 		}
 	}

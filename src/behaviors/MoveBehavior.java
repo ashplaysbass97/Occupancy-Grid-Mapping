@@ -19,19 +19,21 @@ public class MoveBehavior implements Behavior {
 	private Grid grid;
 	private PathFinder pathFinder;
 	private ArrayList<Cell> path = new ArrayList<Cell>();
+	private double occupiedCellProbability;
 	
 	private static final int HEADING_NORTH = 0;
 	private static final int HEADING_WEST = -90;
 	private static final int HEADING_EAST = 90;
 	private static final int HEADING_SOUTH = 180;
 	
-	public MoveBehavior(PilotRobot myRobot, Grid grid) {
+	public MoveBehavior(PilotRobot myRobot, Grid grid, boolean useSensorModel) {
 		this.myRobot = myRobot;
 		myPilot = myRobot.getPilot();
 		opp = myRobot.getOdometryPoseProvider();
 		
 		this.grid = grid;
-		pathFinder = new PathFinder(grid.getGrid());
+		occupiedCellProbability = useSensorModel ? 0.7 : 1;
+		pathFinder = new PathFinder(grid.getGrid(), occupiedCellProbability);
 	}
 	
 	public final void suppress() {
@@ -52,7 +54,7 @@ public class MoveBehavior implements Behavior {
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
 		
-		if (path.get(0).getOccupancyProbability() > 0.7) {
+		if (path.get(0).getOccupancyProbability() >= occupiedCellProbability) {
 			destination = grid.areCellsUnknown() ? selectDestination() : grid.getCell(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
 		}
@@ -84,7 +86,7 @@ public class MoveBehavior implements Behavior {
 		});
 		
 		for (Cell cell : sortableGrid) {
-			if (cell.getOccupancyProbability() < 0.7 && !cell.isBlocked() && !(cell.getOccupancyProbability() == 0 && cell.countUnknownNeighbours() == 0)) {
+			if (cell.getOccupancyProbability() < occupiedCellProbability && !cell.isBlocked() && !(cell.getOccupancyProbability() == 0 && cell.countUnknownNeighbours() == 0)) {
 				return cell;
 			}
 		}

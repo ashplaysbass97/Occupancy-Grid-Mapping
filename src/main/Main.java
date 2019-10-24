@@ -13,6 +13,9 @@ import monitors.PilotMonitor;
 public class Main {
 	private static final int PORT = 1234; // server port between pc client and robot
 	private static ServerSocket server; // server socket used between robot and pc client.
+	
+	private static boolean useSensorModel = true;
+	private static boolean usePCMonitor = false;
 
 	public static void main(String[] args) {
 		// initalise the grid, robot and monitor
@@ -22,24 +25,27 @@ public class Main {
 
 		// start server and create PCMonitor thread
 		PCMonitor pcMonitor = null;
-		try {
-			server = new ServerSocket(PORT);
-			System.out.println("Awaiting client..");
-			Socket client = server.accept();
-			pcMonitor = new PCMonitor(client, myRobot, grid);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-
+		if (usePCMonitor) {
+			try {
+				server = new ServerSocket(PORT);
+				System.out.println("Awaiting client..");
+				Socket client = server.accept();
+				pcMonitor = new PCMonitor(client, myRobot, grid);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+		}
+		
 		// start the monitors
 		myMonitor.start();
-		pcMonitor.start();
+		if (usePCMonitor) {
+			pcMonitor.start();
+		}
 
 		// set up the behaviours for the arbitrator and construct it
-		Behavior b1 = new MoveBehavior(myRobot, grid);
-		Behavior b2 = new ScanBehavior(myRobot, myMonitor, grid);
-		// Behavior b3 = new ExitBehavior(myRobot, myMonitor, pcMonitor);
-		Behavior b3 = new ExitBehavior(myRobot, myMonitor);
+		Behavior b1 = new MoveBehavior(myRobot, grid, useSensorModel);
+		Behavior b2 = new ScanBehavior(myRobot, myMonitor, grid, useSensorModel);
+		Behavior b3 = usePCMonitor ? new ExitBehavior(myRobot, myMonitor, pcMonitor) : new ExitBehavior(myRobot, myMonitor);
 		Behavior [] behaviorArray = {b1, b2, b3};
 		Arbitrator arbitrator = new Arbitrator(behaviorArray);
 		arbitrator.go();
