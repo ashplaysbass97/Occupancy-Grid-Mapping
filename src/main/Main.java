@@ -2,9 +2,12 @@ package main;
 import behaviors.ExitBehavior;
 import behaviors.MoveBehavior;
 import behaviors.ScanBehavior;
+import behaviors.StopBehavior;
 
 import java.io.*;
 import java.net.*;
+
+import lejos.hardware.Sound;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import monitors.PCMonitor;
@@ -45,9 +48,11 @@ public class Main {
 		// set up the behaviours for the arbitrator and construct it
 		Behavior b1 = usePCMonitor ? new MoveBehavior(myRobot, grid, pcMonitor, useSensorModel) : new MoveBehavior(myRobot, grid, useSensorModel);
 		Behavior b2 = new ScanBehavior(myRobot, myMonitor, grid, useSensorModel);
-		Behavior b3 = usePCMonitor ? new ExitBehavior(myRobot, myMonitor, pcMonitor) : new ExitBehavior(myRobot, myMonitor);
+		Behavior b3 = usePCMonitor ? new ExitBehavior(myRobot, myMonitor, pcMonitor, grid) : new ExitBehavior(myRobot, myMonitor);
 		Behavior [] behaviorArray = {b1, b2, b3};
 		Arbitrator arbitrator = new Arbitrator(behaviorArray);
+		File file=new File("soundEffects/turret_deploy.wav");
+		Sound.playSample(file);
 		arbitrator.go();
 	}
 }

@@ -1,3 +1,5 @@
+package main;
+
 import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.hardware.port.Port;
 import lejos.hardware.Brick;

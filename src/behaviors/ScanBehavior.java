@@ -1,8 +1,10 @@
 package behaviors;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.robotics.localization.OdometryPoseProvider;
 import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.subsumption.Behavior;
@@ -45,6 +47,22 @@ public class ScanBehavior implements Behavior {
 	public final void action() {
 		suppressed = false;
 		if (!suppressed) {
+			
+			int chance = (int)(Math.random()*((10)+1));
+			if (chance == 1) {
+				File file=new File("soundEffects/turret_active.wav");
+				Sound.playSample(file);
+			} else 	if (chance == 2) {
+				File file=new File("soundEffects/turret_search.wav");
+				Sound.playSample(file);
+			} else 	if (chance == 3) {
+				File file=new File("soundEffects/turretstuckintube.wav");
+				Sound.playSample(file);
+			} else 	if (chance == 4) {
+				File file=new File("soundEffects/finale_turret_defect_goodbye.wav");
+				Sound.playSample(file);
+			}
+			
 			
 			OdometryPoseProvider opp = myRobot.getOdometryPoseProvider();
 			double heading = opp.getPose().getHeading();

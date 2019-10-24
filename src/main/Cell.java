@@ -120,5 +120,6 @@ public class Cell {
 	
 	public final void setIsBlocked(boolean isBlocked) {
 		this.isBlocked = isBlocked;
+		setOccupancyProbability(-2);
 	}
 }

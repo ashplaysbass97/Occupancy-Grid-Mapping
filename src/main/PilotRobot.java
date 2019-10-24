@@ -30,6 +30,8 @@ public class PilotRobot {
 	private MovePilot pilot;
 	private OdometryPoseProvider opp;
 	private boolean scanRequired = true;
+	private Wheel leftWheel = WheeledChassis.modelWheel(Motor.B, 4.05).offset(-4.9);
+	private Wheel rightWheel = WheeledChassis.modelWheel(Motor.D, 4.05).offset(4.9);
 	
 	// SmartRobot constructor
 	public PilotRobot() {
@@ -46,10 +48,10 @@ public class PilotRobot {
 	 */
 	private void setupColorSensors() {
 		leftColorSensor = new EV3ColorSensor(ev3.getPort("S1"));
-		leftColorSampleProvider = leftColorSensor.getRGBMode();
+		leftColorSampleProvider = leftColorSensor.getColorIDMode();
 		leftColorSample = new float[leftColorSampleProvider.sampleSize()];
 		rightColorSensor = new EV3ColorSensor(ev3.getPort("S4"));
-		rightColorSampleProvider = rightColorSensor.getRGBMode();
+		rightColorSampleProvider = rightColorSensor.getColorIDMode();
 		rightColorSample = new float[rightColorSampleProvider.sampleSize()];
 	}
 	
@@ -75,14 +77,12 @@ public class PilotRobot {
 	 * Set up the pilot.
 	 */
 	private void setupPilot() {
-		Wheel leftWheel = WheeledChassis.modelWheel(Motor.B, 4.05).offset(-4.9);
-		Wheel rightWheel = WheeledChassis.modelWheel(Motor.D, 4.05).offset(4.9);
 		Chassis myChassis = new WheeledChassis(new Wheel[] { leftWheel, rightWheel }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(myChassis);
-		pilot.setLinearAcceleration(5);
-		pilot.setLinearSpeed(25);
-		pilot.setAngularAcceleration(45);
-		pilot.setAngularSpeed(90);
+//		pilot.setLinearAcceleration(5);
+		pilot.setLinearSpeed(5);
+		// pilot.setAngularAcceleration(45);
+		pilot.setAngularSpeed(45);
 	}
 	
 	/**
@@ -157,4 +157,17 @@ public class PilotRobot {
 		ultrasonicSensor.close();
 		gyroSensor.close();
 	}
+	
+	public Brick getBrick() {
+		return ev3;
+	}
+	
+	public Wheel getRightWheel() {
+		return rightWheel;
+	}
+	
+	public Wheel getLeftWheel() {
+		return leftWheel;
+	}
+	
 }

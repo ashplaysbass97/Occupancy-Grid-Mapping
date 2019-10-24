@@ -62,6 +62,8 @@ public class PilotMonitor extends Thread {
 					rowString += "|||";
 					
 				// display occupancy probability to 1 significant digit
+				} else if (probability == -2) {
+					rowString += " X ";
 				} else {
 					rowString += Math.round(probability * 10) / 10.0;
 				}

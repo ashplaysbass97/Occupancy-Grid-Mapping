@@ -86,4 +86,24 @@ public class Grid {
 		this.currentCell = currentCell;
 		currentCell.setOccupancyProbability(0);
 	}
+	
+	public int noOfOccupiedCells() {
+		int i = 0;
+		for (Cell cell: grid) {
+			if (cell.getOccupancyProbability() >= 0.7 && !cell.isBlocked()) {
+				i++;
+			}
+		}
+		return i;
+	}
+	
+	public ArrayList<Cell> getOccupiedCells() {
+		ArrayList<Cell> occupiedCells = new ArrayList<Cell>();
+		for (Cell cell : grid) {
+			if (cell.getOccupancyProbability() >= 0.7) {
+				occupiedCells.add(cell);
+			}
+		}
+		return occupiedCells;
+	}
 }

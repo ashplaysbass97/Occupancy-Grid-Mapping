@@ -137,6 +137,8 @@ public class PCClient extends JFrame {
 			for (int i = 0; i < gridProbabilities.length; i++) {
 				if (gridProbabilities[i] == "-1.0") {
 					lOccupancyProbabilities[i].setText("?");
+				} else if (gridProbabilities[i] == "-1.0") {
+					lOccupancyProbabilities[i].setText("Unvisitable");
 				} else {
 					lOccupancyProbabilities[i].setText(gridProbabilities[i]);
 				}
