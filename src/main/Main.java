@@ -14,8 +14,8 @@ public class Main {
 	private static final int PORT = 1234; // server port between pc client and robot
 	private static ServerSocket server; // server socket used between robot and pc client.
 	
-	private static boolean useSensorModel = true;
-	private static boolean usePCMonitor = false;
+	private static boolean useSensorModel = false;
+	private static boolean usePCMonitor = true;
 
 	public static void main(String[] args) {
 		// initalise the grid, robot and monitor

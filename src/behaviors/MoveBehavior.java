@@ -111,7 +111,45 @@ public class MoveBehavior implements Behavior {
 		
 		return null;
 	}
-	//If the gyroscope has accumilated an angle greater than 360 or less then -360 its returns a reset value.
+	
+	/* public void rotate(double degrees) {
+		myRobot.resetGyro();
+		myPilot.rotate(degrees);
+		double actual = myRobot.getAngle();
+		double adjustment = degrees - actual;
+		if (adjustment != 0) {
+			rotate(adjustment);
+		}
+	}
+	
+	public void followPath(int x, int y) {
+		int heading;
+		
+		if (x - opp.getPose().getX() > 0) {
+			heading = HEADING_EAST;
+		} else if (x - opp.getPose().getX() < 0) {
+			heading = HEADING_WEST;
+		} else if (y - opp.getPose().getY() > 0) {
+			heading = HEADING_NORTH;
+		} else {
+			heading = HEADING_SOUTH;
+		}
+		
+		// rotate and travel
+		rotate(getHeadingError(heading));
+		myPilot.travel(25);
+		
+		// set pose and current cell of grid object
+		opp.setPose(new Pose(x, y, heading));
+		grid.setCurrentCell(grid.getCell(x, y));
+		
+		// only scan neighbours if cell hasn't already been visited
+		if (!grid.getCurrentCell().hasBeenVisited()) {
+			myRobot.setScanRequired(true);
+		}
+	} */
+	
+	// if the gyroscope has accumilated an angle greater than 360 or less then -360 its returns a reset value.
 	public float correctedGyroReading() {
 		float gyroAngle = myRobot.getAngle();
 		if (gyroAngle > 0) {
@@ -125,6 +163,7 @@ public class MoveBehavior implements Behavior {
 		}
 		return gyroAngle;
 	}
+	
 	/**
 	 * Moves towards the coordinates of a neighbouring cell.
 	 * @param x the x-coordinate of the cell to travel towards
@@ -137,6 +176,7 @@ public class MoveBehavior implements Behavior {
 		if (x - opp.getPose().getX() > 0) {
 			myPilot.rotate(getHeadingError(HEADING_EAST));
 			gyroAngle = correctedGyroReading();
+			
 			//correct for error
 			if (!((gyroAngle > 89 && gyroAngle < 91)||(gyroAngle > -271 && gyroAngle < -269))){
 				if (gyroAngle > 0) {
@@ -148,6 +188,7 @@ public class MoveBehavior implements Behavior {
 		} else if (x - opp.getPose().getX() < 0) {
 			myPilot.rotate(getHeadingError(HEADING_WEST));
 			gyroAngle = correctedGyroReading();
+			
 			//correct for error
 			if (!((gyroAngle < -89 && gyroAngle > -91)||(gyroAngle < 271 && gyroAngle > 269))){
 				if (gyroAngle > 0) {
@@ -159,6 +200,7 @@ public class MoveBehavior implements Behavior {
 		} else if (y - opp.getPose().getY() > 0) {
 			myPilot.rotate(getHeadingError(HEADING_NORTH));
 			gyroAngle = correctedGyroReading();
+			
 			//correct for error
 			if (!((gyroAngle > 359 || gyroAngle < 1)||(gyroAngle > -1 && gyroAngle < -359))){
 				if (gyroAngle > 0) {
@@ -170,6 +212,7 @@ public class MoveBehavior implements Behavior {
 		} else {
 			myPilot.rotate(getHeadingError(HEADING_SOUTH));
 			gyroAngle = correctedGyroReading();
+			
 			//correct for error
 			if (!((gyroAngle > 179 && gyroAngle < 181)||(gyroAngle < -179 && gyroAngle > -181))){
 				if (gyroAngle > 0) {
@@ -179,13 +222,9 @@ public class MoveBehavior implements Behavior {
 				}
 			}
 		}
-		//get a distance to enaest object for error correction
-//		double distance1 = myRobot.getDistance();
-		// TODO figure out the correct distance to travel
+		
 		myPilot.travel(25);
-		//take new distance afetr travel find the diffrence and see how far of 25cm it was.
-//		double distance2 = myRobot.getDistance();
-//		myPilot.travel(distance1-distance2-25);
+		
 		// set pose and current cell of grid object
 		opp.setPose(new Pose(x, y, opp.getPose().getHeading()));
 		grid.setCurrentCell(grid.getCell(x, y));

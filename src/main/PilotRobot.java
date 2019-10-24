@@ -146,6 +146,11 @@ public class PilotRobot {
 	public final void setScanRequired(boolean scanRequired) {
 		this.scanRequired = scanRequired;
 	}
+	
+	// reset the gyro sensor
+	public final void resetGyro() {
+		gyroSensor.reset();
+	}
 
 	// close the bumpers, ultrasonic sensor & gyro sensor
 	public final void closeRobot() {
