@@ -43,15 +43,11 @@ public class PCMonitor extends Thread {
 
 			/*output data for
 			 * Battery,
-			 * Left touch sensor,
-			 * right touch sensor,
 			 * ultrasound sensor,
 			 * gyroscope,
 			 * and motor status
 			 */
 			out.println("Battery: " + robot.getBatteryVoltage());
-			out.println("Left touch sensor: " + robot.isLeftBumperPressed());
-			out.println("Right touch sensor: " + robot.isRightBumperPressed());
 			out.println("Sonar distance: " + robot.getDistance());
 			out.println("Gyro angle: " + robot.getAngle());
 			if (robot.getPilot().isMoving()) {

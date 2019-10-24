@@ -21,11 +21,10 @@ import lejos.robotics.navigation.Pose;
  */
 public class PilotRobot {
 	private Brick ev3;
-	private EV3TouchSensor leftBumper, rightBumper;
 	private EV3UltrasonicSensor ultrasonicSensor;
 	private EV3GyroSensor gyroSensor;
-	private SampleProvider leftBumperSampleProvider, rightBumperSampleProvider, ultrasonicSampleProvider, gyroSampleProvider;
-	private float[] leftBumperSample, rightBumperSample, ultrasonicSample, gyroSample;
+	private SampleProvider ultrasonicSampleProvider, gyroSampleProvider;
+	private float[] ultrasonicSample, gyroSample;
 	private MovePilot pilot;
 	private OdometryPoseProvider opp;
 	private boolean scanRequired = true;
@@ -34,7 +33,6 @@ public class PilotRobot {
 	public PilotRobot() {
 		ev3 = BrickFinder.getDefault();
 		setupGyroSensor();
-		setupTouchSensor();
 		setupUltrasonicSensor();
 		setupPilot();
 		setupOdometryPoseProvider();
@@ -47,18 +45,6 @@ public class PilotRobot {
 		gyroSensor = new EV3GyroSensor(ev3.getPort("S3"));
 		gyroSampleProvider = gyroSensor.getAngleMode();
 		gyroSample = new float[gyroSampleProvider.sampleSize()];
-	}
-
-	/**
-	 * Set up the touch sensors.
-	 */
-	private void setupTouchSensor() {
-		leftBumper = new EV3TouchSensor(ev3.getPort("S1"));
-		rightBumper = new EV3TouchSensor(ev3.getPort("S4"));
-		leftBumperSampleProvider = leftBumper.getTouchMode();
-		rightBumperSampleProvider = rightBumper.getTouchMode();
-		leftBumperSample = new float[leftBumperSampleProvider.sampleSize()];
-		rightBumperSample = new float[rightBumperSampleProvider.sampleSize()];
 	}
 
 	/**
@@ -90,18 +76,6 @@ public class PilotRobot {
 	private void setupOdometryPoseProvider() {
 		opp = new OdometryPoseProvider(pilot);
 		opp.setPose(new Pose(0, 0, 0));
-	}
-
-	// whether the left bumper is pressed
-	public final boolean isLeftBumperPressed() {
-		leftBumperSampleProvider.fetchSample(leftBumperSample, 0);
-		return (leftBumperSample[0] == 1.0);
-	}
-
-	// whether the right bumper is pressed
-	public final boolean isRightBumperPressed() {
-		rightBumperSampleProvider.fetchSample(rightBumperSample, 0);
-		return (rightBumperSample[0] == 1.0);
 	}
 	
 	// whether a scan is required
@@ -148,8 +122,6 @@ public class PilotRobot {
 
 	// close the bumpers, ultrasonic sensor & gyro sensor
 	public final void closeRobot() {
-		leftBumper.close();
-		rightBumper.close();
 		ultrasonicSensor.close();
 		gyroSensor.close();
 	}
