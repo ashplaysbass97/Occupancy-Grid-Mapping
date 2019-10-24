@@ -23,6 +23,10 @@ public class MoveBehavior implements Behavior {
 	private ArrayList<Cell> path = new ArrayList<Cell>();
 	private double occupiedCellProbability;
 	private PCMonitor pcMonitor;
+	private final float blackColourUpperLimit = 0;
+	private final float blackColourLowerLimit = 0;
+	private final float whiteColourUpperLimit = 0;
+	private final float whiteColourLowerLimit = 0;
 	
 	private static final int HEADING_NORTH = 0;
 	private static final int HEADING_WEST = -90;
@@ -259,20 +263,19 @@ public class MoveBehavior implements Behavior {
 			}
 		}
 		
-		grid.setCurrentCell(grid.getCell(x, y));
-		//grid.getCell(x, y).visit();
-		
-		// only scan neighbours if cell hasn't already been visited
-		if (!grid.getCurrentCell().hasBeenVisited()) {
-			myRobot.setScanRequired(true);
-		}
-		
 //		correctedTravel();
 		myPilot.travel(25, true);
+		boolean crossedLine = false;
 		while (myPilot.isMoving() ) {
+			if ((leftOnLine() && rightOnLine()) && !crossedLine) {
+				crossedLine = true;
+				myPilot.stop();
+				myPilot.travel(17.5,true);
+			}
 			if (myRobot.getDistance() < 5) {
 				myPilot.stop();
 			}
+
 	}
 ////			if (leftOnLine() && !rightOnLine()) {
 ////				myPilot.stop();
@@ -301,6 +304,13 @@ public class MoveBehavior implements Behavior {
 		
 		// set pose and current cell of grid object
 		opp.setPose(new Pose(x, y, opp.getPose().getHeading()));
+		grid.setCurrentCell(grid.getCell(x, y));
+		
+		// only scan neighbours if cell hasn't already been visited
+		if (!grid.getCurrentCell().hasBeenVisited()) {
+			grid.getCurrentCell().visit();
+			myRobot.setScanRequired(true);
+		}
 		
 	}
 	
