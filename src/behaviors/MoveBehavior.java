@@ -10,6 +10,7 @@ import main.Cell;
 import main.Grid;
 import main.PathFinder;
 import main.PilotRobot;
+import monitors.PCMonitor;
 
 public class MoveBehavior implements Behavior {
 	private boolean suppressed = false;
@@ -20,11 +21,24 @@ public class MoveBehavior implements Behavior {
 	private PathFinder pathFinder;
 	private ArrayList<Cell> path = new ArrayList<Cell>();
 	private double occupiedCellProbability;
+	private PCMonitor pcMonitor;
 	
 	private static final int HEADING_NORTH = 0;
 	private static final int HEADING_WEST = -90;
 	private static final int HEADING_EAST = 90;
 	private static final int HEADING_SOUTH = 180;
+	
+	public MoveBehavior(PilotRobot myRobot, Grid grid, PCMonitor pcMonitor, boolean useSensorModel) {
+		this.myRobot = myRobot;
+		myPilot = myRobot.getPilot();
+		opp = myRobot.getOdometryPoseProvider();
+		
+		this.grid = grid;
+		occupiedCellProbability = useSensorModel ? 0.7 : 1;
+		pathFinder = new PathFinder(grid.getGrid(), occupiedCellProbability);
+		
+		this.pcMonitor = pcMonitor;
+	}
 	
 	public MoveBehavior(PilotRobot myRobot, Grid grid, boolean useSensorModel) {
 		this.myRobot = myRobot;
@@ -52,11 +66,15 @@ public class MoveBehavior implements Behavior {
 		if (path.isEmpty()) {
 			destination = grid.areCellsUnknown() ? selectDestination() : grid.getCell(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
+			pcMonitor.setDestination(destination);
+			pcMonitor.setPath(path);
 		}
 		
 		if (path.get(0).getOccupancyProbability() >= occupiedCellProbability) {
 			destination = grid.areCellsUnknown() ? selectDestination() : grid.getCell(0, 0);
 			path = pathFinder.findPath(grid.getCurrentCell(), destination);
+			pcMonitor.setDestination(destination);
+			pcMonitor.setPath(path);
 		}
 		
 		if (path != null) {

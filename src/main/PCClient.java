@@ -13,7 +13,7 @@ import javax.swing.*;
 public class PCClient extends JFrame {
 	
 	// java swing window
-	static JFrame f; 
+	static JFrame myFrame = new JFrame("Robot progress"); 
   
 	// label to display robot data 
 	static JLabel lRobotStats; 
@@ -21,40 +21,40 @@ public class PCClient extends JFrame {
 	static JLabel[] robotStates = new JLabel[42];
 	static int currentCell;
 	static String[] gridProbabilities;
-	static ImageIcon robotIcon = new ImageIcon("RobotIcon.png");
+	static ImageIcon robotIcon = new ImageIcon("robot.png");
 	static ImageIcon empty = new ImageIcon("empty.png");
 	
 	// bufferd reader this will connect to the socket PCMonitor.java uses
 	static BufferedReader in;
 
-	// default constructor 
-	PCClient() { 
-		
-	} 
-
 	public static void main(String[] args) throws IOException {
 		
-		// create a new frame to store text field and button 
-		f = new JFrame("Robot progress"); 
+		// set window size
+		myFrame.setResizable(false);
+		myFrame.setSize(1280, 640);
 
-		// create a label to display text 
-		lRobotStats = new JLabel(); 
-
-		// create a panel 
+		// create master panel
 		JPanel masterPanel = new JPanel();
-		masterPanel.setLayout(new BoxLayout(masterPanel, BoxLayout.LINE_AXIS));
-		JPanel robotStats = new JPanel(); 
-		robotStats.setPreferredSize(new Dimension(300, 300));
+		masterPanel.setLayout(new GridLayout(1, 2));
+		
+		// create robot stats panel
+		JPanel robotStats = new JPanel();
+		lRobotStats = new JLabel(); 
+		
+		// create the occupancy grid panel
 		JPanel occupancyGrid = new JPanel(new GridLayout(6,7));
 		JPanel[][] gridPanels = new JPanel[6][7];
+		
 		int count = 0;
 		for (int i = 5; i >= 0; i--) {
 			for (int j = 0; j < 7; j++) {
-				gridPanels[i][j] = new JPanel(new GridLayout(2,1));
+				gridPanels[i][j] = new JPanel(new GridLayout(3, 1));
 				lOccupancyProbabilities[count] = new JLabel("?");
 				robotStates[count] = new JLabel();
 				gridPanels[i][j].add(robotStates[count]);
 				gridPanels[i][j].add(lOccupancyProbabilities[count]);
+				
+				gridPanels[i][j].add(new JLabel("(" + j + ", " + i + ")"));
 				gridPanels[i][j].setBorder(BorderFactory.createLineBorder(Color.black));
 				occupancyGrid.add(gridPanels[i][j]);
 				count++;
@@ -65,15 +65,26 @@ public class PCClient extends JFrame {
 		robotStats.add(lRobotStats); 
 		masterPanel.add(robotStats);
 		masterPanel.add(occupancyGrid);
-		// add panel to frame 
-		f.add(masterPanel); 
-  
-		// set the size of frame 
-		f.setSize(700, 700); 
 		
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setVisible(true); 
-		lRobotStats.setText("null");
+		// add panel to frame 
+		myFrame.add(masterPanel); 
+		
+		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		myFrame.setVisible(true); 
+		lRobotStats.setText(
+				"<html><h1>Robot 14</h1>\n"
+					+ "Sensor data:<ul>"
+						+ "<li>Sonar distance: </li>"
+						+ "<li>Gyro angle: </li>"
+						+ "<li>Left colour: </li>"
+						+ "<li>Right colour: </li>"
+					+ "</ul>Movement information:<ul>"
+						+ "<li>Status: </li>"
+						+ "<li>Type: </li>"
+					+ "</ul>Navigation strategy:<ul>"
+						+ "<li>Next destination: </li>"
+						+ "<li>Current path: </li>"
+					+ "</ul>");
 		
 		//IP of the robot
 		String ip = "192.168.70.163"; 
@@ -102,36 +113,38 @@ public class PCClient extends JFrame {
 	public static void updateValues() {
 		try {
 			lRobotStats.setText(
-					"<html>\n"
-						+ "<ul>\n"
-							+ "<li>" + in.readLine() + "\n"
-							+ "<li>" + in.readLine() + "\n"
-							+ "<li>" + in.readLine() + "\n"
-							+ "<li>" + in.readLine() + "\n"
-							+ "<li>" + in.readLine() + "\n"
-							+ "<li>" + in.readLine() + "\n"
-							+ "<li>" + in.readLine() + "\n"
-						+ "</ul>\n");
+					"<html><h1>Robot 14</h1>\n"
+						+ "Sensor data:<ul>"
+							+ "<li>Sonar distance: " + in.readLine() + "</li>"
+							+ "<li>Gyro angle: " + in.readLine() + "</li>"
+							+ "<li>Left colour: " + in.readLine() + "</li>"
+							+ "<li>Right colour: " + in.readLine() + "</li>"
+						+ "</ul>Movement information:<ul>"
+							+ "<li>Status: " + in.readLine() + "</li>"
+							+ "<li>Type: " + in.readLine() + "</li>"
+						+ "</ul>Navigation strategy:<ul>"
+							+ "<li>Next destination: " + in.readLine() + "</li>"
+							+ "<li>Current path: " + in.readLine() + "</li>"
+						+ "</ul>");
 			
-			//fill in display grid with occupation probablities and robot position.
+			// fill in display grid with occupation probablities and robot position.
 			gridProbabilities = in.readLine().split(",");
+			
 			String currentCord = in.readLine();
-			System.out.println("currentCord: " + currentCord);
 			int x = Integer.parseInt(currentCord.split(",")[0]);
 			int y = Integer.parseInt(currentCord.split(",")[1]);
-
-			for (int i = gridProbabilities.length - 1; i >= 0; i--) {
-			    System.out.println(gridProbabilities[i]);
-			    if (gridProbabilities[i] == "-1") {
-			      lOccupancyProbabilities[i].setText("?");
-			    } else {
-			      lOccupancyProbabilities[i].setText(gridProbabilities[i]);
-			    }
-			    
-				if (((y*7) + x) != i) {
-					robotStates[i].setIcon(null);
+			
+			for (int i = 0; i < gridProbabilities.length; i++) {
+				if (gridProbabilities[i] == "-1.0") {
+					lOccupancyProbabilities[i].setText("?");
 				} else {
+					lOccupancyProbabilities[i].setText(gridProbabilities[i]);
+				}
+				
+				if (i == x + (5 - y) * 7) {
 					robotStates[i].setIcon(robotIcon);
+				} else {
+					robotStates[i].setIcon(empty);
 				}
 			}
 			

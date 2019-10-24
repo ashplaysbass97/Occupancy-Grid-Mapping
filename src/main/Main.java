@@ -43,7 +43,7 @@ public class Main {
 		}
 
 		// set up the behaviours for the arbitrator and construct it
-		Behavior b1 = new MoveBehavior(myRobot, grid, useSensorModel);
+		Behavior b1 = usePCMonitor ? new MoveBehavior(myRobot, grid, pcMonitor, useSensorModel) : new MoveBehavior(myRobot, grid, useSensorModel);
 		Behavior b2 = new ScanBehavior(myRobot, myMonitor, grid, useSensorModel);
 		Behavior b3 = usePCMonitor ? new ExitBehavior(myRobot, myMonitor, pcMonitor) : new ExitBehavior(myRobot, myMonitor);
 		Behavior [] behaviorArray = {b1, b2, b3};

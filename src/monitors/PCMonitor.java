@@ -5,6 +5,7 @@ import main.PilotRobot;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 // Used to send data about the robot to a PC client interface.
 public class PCMonitor extends Thread {
@@ -22,6 +23,9 @@ public class PCMonitor extends Thread {
 	private PilotRobot robot;
 
 	private Grid grid;
+	
+	private Cell destination = null;
+	private ArrayList<Cell> path = new ArrayList<Cell>();
 
 	public PCMonitor(Socket client, PilotRobot robot, Grid grid) {
 		this.client = client;
@@ -39,28 +43,45 @@ public class PCMonitor extends Thread {
 	//run the thread
 	public void run() {
 		while (running) {
-
-
-			/*output data for
-			 * Battery,
-			 * ultrasound sensor,
-			 * gyroscope,
-			 * and motor status
-			 */
-			out.println("Battery: " + robot.getBatteryVoltage());
-			out.println("Sonar distance: " + robot.getDistance());
-			out.println("Gyro angle: " + robot.getAngle());
+			
+			// output sensor information
+			out.println(robot.getDistance());
+			out.println(robot.getAngle());
+			out.println(robot.getLeftColor()[0]);
+			out.println(robot.getRightColor()[0]);
+			
+			// ouptut movement information
 			if (robot.getPilot().isMoving()) {
-				out.println("Motor status: " + "Moving");
+				out.println("Moving");
 			} else {
-				out.println("Motor status: " + "Stationary");
+				out.println("Stationary");
 			}
-			out.println("  type: " + robot.getPilot().getMovement().getMoveType());
+			out.println(robot.getPilot().getMovement().getMoveType());
+			
+			// output the destination
+			if (destination != null) {
+				out.println("(" + destination.getX() + ", " + destination.getY() + ")");
+			} else {
+				out.println("null");
+			}
+			
+			// output the path
+			if (!path.isEmpty()) {
+				String pathOutput = "";
+				for (Cell cell : path) {
+					pathOutput += "(" + cell.getX() + ", " + cell.getY() + "), ";
+				}
+				out.println(pathOutput.substring(0, pathOutput.length() - 2));
+			} else {
+				out.println("null");
+			}
 			
 			// output probability data and current cell
 			String probabilityData = "";
-			for (Cell cell : grid.getGrid()) {
-				probabilityData += cell.getOccupancyProbability() + ",";
+			for (int y = grid.getGridHeight() - 1; y >= 0; y--) {
+				for (int x = 0; x < grid.getGridWidth(); x++) {
+					probabilityData += grid.getCell(x, y).getOccupancyProbability() + ",";
+				}
 			}
 			out.println(probabilityData);
 			out.println(grid.getCurrentCell().getX() + "," + grid.getCurrentCell().getY());
@@ -73,6 +94,14 @@ public class PCMonitor extends Thread {
 				running = false;
 			}
 		}
+	}
+	
+	public final void setDestination (Cell destination) {
+		this.destination = destination;
+	}
+	
+	public final void setPath (ArrayList<Cell> path) {
+		this.path = path;
 	}
 	
 	public final void terminate() {
