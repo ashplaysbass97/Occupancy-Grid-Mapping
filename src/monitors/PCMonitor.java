@@ -47,6 +47,7 @@ public class PCMonitor extends Thread {
 			// output sensor information
 			out.println(robot.getDistance());
 			out.println(robot.getAngle());
+			out.println(robot.getCorrectedGyro());
 			out.println(robot.getLeftColor()[0]);
 			out.println(robot.getRightColor()[0]);
 			
@@ -57,7 +58,7 @@ public class PCMonitor extends Thread {
 				out.println("Stationary");
 			}
 			out.println(robot.getPilot().getMovement().getMoveType());
-			
+			out.println(robot.getOdometryPoseProvider().getPose().getHeading());
 			// output the destination
 			if (destination != null) {
 				out.println("(" + destination.getX() + ", " + destination.getY() + ")");
@@ -66,7 +67,7 @@ public class PCMonitor extends Thread {
 			}
 			
 			// output the path
-			if (!path.isEmpty()) {
+			if (path != null && !path.isEmpty()) {
 				String pathOutput = "";
 				for (Cell cell : path) {
 					pathOutput += "(" + cell.getX() + ", " + cell.getY() + "), ";
@@ -80,7 +81,7 @@ public class PCMonitor extends Thread {
 			String probabilityData = "";
 			for (int y = grid.getGridHeight() - 1; y >= 0; y--) {
 				for (int x = 0; x < grid.getGridWidth(); x++) {
-					probabilityData += grid.getCell(x, y).getOccupancyProbability() + ",";
+					probabilityData +=  ((double)Math.round(grid.getCell(x, y).getOccupancyProbability()*1000)/1000) + ",";
 				}
 			}
 			out.println(probabilityData);

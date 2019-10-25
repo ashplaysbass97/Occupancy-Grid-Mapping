@@ -45,22 +45,6 @@ public class Sensor {
 		currentPosition = (int) (robot.getAngle());
 	}
 	
-//	public  String getSensorHeading() {
-//	  if (currentPosition > -10 || currentPosition < 10) { //check if sensor has a north heading within error of 10 degrees
-//  
-//        return "North";       
-//      } else if ((currentPosition > 80 && currentPosition < 100)) { //check for east heading
-//
-//        return "East";
-//      } else if ((currentPosition > 170 || currentPosition < -170)) { //check for south heading
-//        
-//        return "South";
-//      } else { //assume west heading
-//
-//        return "West";
-//      }
-//    }
-	
 	public double tan(int opposite, int adjacent) {
 	  return Math.tan(((opposite * cellSize) - cellCenterDistance) / ((adjacent * cellSize) - cellCenterDistance)) * (180 / Math.PI);
 	}

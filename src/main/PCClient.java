@@ -81,6 +81,7 @@ public class PCClient extends JFrame {
 					+ "</ul>Movement information:<ul>"
 						+ "<li>Status: </li>"
 						+ "<li>Type: </li>"
+						+"<li>Heading: </li>"
 					+ "</ul>Navigation strategy:<ul>"
 						+ "<li>Next destination: </li>"
 						+ "<li>Current path: </li>"
@@ -117,11 +118,13 @@ public class PCClient extends JFrame {
 						+ "Sensor data:<ul>"
 							+ "<li>Sonar distance: " + in.readLine() + "</li>"
 							+ "<li>Gyro angle: " + in.readLine() + "</li>"
+							+ "<li>Corrected Gyro angle: " + in.readLine() + "</li>"
 							+ "<li>Left colour: " + in.readLine() + "</li>"
 							+ "<li>Right colour: " + in.readLine() + "</li>"
 						+ "</ul>Movement information:<ul>"
 							+ "<li>Status: " + in.readLine() + "</li>"
 							+ "<li>Type: " + in.readLine() + "</li>"
+							+"<li>Heading: " + in.readLine() + "</li>"
 						+ "</ul>Navigation strategy:<ul>"
 							+ "<li>Next destination: " + in.readLine() + "</li>"
 							+ "<li>Current path: " + in.readLine() + "</li>"
@@ -137,7 +140,7 @@ public class PCClient extends JFrame {
 			for (int i = 0; i < gridProbabilities.length; i++) {
 				if (gridProbabilities[i] == "-1.0") {
 					lOccupancyProbabilities[i].setText("?");
-				} else if (gridProbabilities[i] == "-1.0") {
+				} else if (gridProbabilities[i] == "-2.0") {
 					lOccupancyProbabilities[i].setText("Unvisitable");
 				} else {
 					lOccupancyProbabilities[i].setText(gridProbabilities[i]);

@@ -32,6 +32,7 @@ public class PilotRobot {
 	private boolean scanRequired = true;
 	private Wheel leftWheel = WheeledChassis.modelWheel(Motor.B, 4.05).offset(-4.9);
 	private Wheel rightWheel = WheeledChassis.modelWheel(Motor.D, 4.05).offset(4.9);
+	private float correctedGyro;
 	
 	// SmartRobot constructor
 	public PilotRobot() {
@@ -80,7 +81,7 @@ public class PilotRobot {
 		Chassis myChassis = new WheeledChassis(new Wheel[] { leftWheel, rightWheel }, WheeledChassis.TYPE_DIFFERENTIAL);
 		pilot = new MovePilot(myChassis);
 //		pilot.setLinearAcceleration(5);
-		pilot.setLinearSpeed(5);
+		pilot.setLinearSpeed(3);
 		// pilot.setAngularAcceleration(45);
 		pilot.setAngularSpeed(45);
 	}
@@ -168,6 +169,14 @@ public class PilotRobot {
 	
 	public Wheel getLeftWheel() {
 		return leftWheel;
+	}
+	
+	public float getCorrectedGyro() {
+		return correctedGyro;
+	}
+	
+	public void setCorrectedGyro(float cg) {
+		this.correctedGyro = cg;
 	}
 	
 }

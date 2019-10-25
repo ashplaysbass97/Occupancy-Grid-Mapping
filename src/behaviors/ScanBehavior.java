@@ -96,7 +96,7 @@ public class ScanBehavior implements Behavior {
 				if (useSensorModel) {
 					ultrasound.calculateCellsInSonarCone(heading - 90);
 				} else {
-					if (myRobot.getDistance() < 25) {
+					if (myRobot.getDistance() < 20) {
 						left.setOccupancyProbability(1);
 					} else {
 						left.setOccupancyProbability(0);

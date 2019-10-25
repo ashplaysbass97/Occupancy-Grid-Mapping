@@ -2,7 +2,6 @@ package main;
 import behaviors.ExitBehavior;
 import behaviors.MoveBehavior;
 import behaviors.ScanBehavior;
-import behaviors.StopBehavior;
 
 import java.io.*;
 import java.net.*;
